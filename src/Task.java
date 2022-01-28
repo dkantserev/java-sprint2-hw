@@ -1,10 +1,10 @@
-public class Task {
-     String nameTask;
-     String taskBody;
-     int id;
-     boolean taskNew;
-     boolean inProgress;
-     boolean done;
+public class Task { // Родительский класс для всех типов задач.
+     protected String nameTask;
+     protected String taskBody;
+     protected int id;
+     protected boolean taskNew;
+     protected boolean inProgress;
+     protected boolean done;
 
     @Override
     public String toString() {
@@ -66,8 +66,6 @@ public class Task {
         this.done = done;
     }
 
-
-
     public Task(String nameTask, String taskBody, int id, boolean taskNew, boolean inProgress, boolean done) {
         this.nameTask = nameTask;
         this.taskBody = taskBody;
@@ -76,7 +74,6 @@ public class Task {
         this.inProgress = inProgress;
         this.done = done;
     }
-
 
     @Override
     public boolean equals(Object o) {

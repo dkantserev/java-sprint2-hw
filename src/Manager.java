@@ -1,6 +1,6 @@
 import java.util.HashMap;
 
-public class Manager {
+public class Manager { // Хранилище всех типов задач, вся логика работы с нимию
     HashMap<Integer,Task> taskMap =new HashMap<>();
     HashMap<Integer,Epic> epicMap = new HashMap<>();
 
@@ -51,6 +51,32 @@ public class Manager {
             }
         }
     }
+
+    public void deleteTaskById(Integer id){ // Удалить задачу по id.
+        taskMap.remove(id);
+    }
+
+    public void  deleteEpicById(Integer id){ // Удалить эпик по id.
+        epicMap.remove(id);
+    }
+
+    public void deleteSubTaskById(Integer idEpic,Integer id){ // Удалить подзадачу эпика по id.
+                    for (int i=1; i<=epicMap.get(idEpic).subTasks.size();i++) {
+                if(epicMap.get(idEpic).subTasks.get(i).getId()==id){
+                    epicMap.get(idEpic).subTasks.remove(i);
+                }
+                else
+                    break;
+                }
+    }
+
+    public void clearTaskMap(){ // Удалить все задачи.
+        taskMap.clear();
+    }
+    public void clearEpicMap(){ // Удалить все эпики.
+        epicMap.clear();
+    }
+
     public void setStatusDoneSubTask(Integer id, SubTask subTask){ // Устанавливает значение подзадачи "выполнено"
                                                                   // , проверяет статус выполнения эпика.
         int progress =0;
@@ -67,6 +93,11 @@ public class Manager {
 
             if(epicMap.get(id).subTasks.get(i).isDone()==true){
                 progress++;
+            }
+            if(progress<epicMap.get(id).subTasks.size()&& progress>0){
+                epicMap.get(id).setInProgress(true);
+                epicMap.get(id).setTaskNew(false);
+                epicMap.get(id).setDone(false);
             }
             if(progress==epicMap.get(id).subTasks.size()){
                 epicMap.get(id).setInProgress(false);

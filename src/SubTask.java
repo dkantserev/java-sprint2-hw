@@ -1,4 +1,4 @@
-public class SubTask extends Task{
+public class SubTask extends Task{ // Подзадача в составе эпика.
 
     public SubTask(String nameTask, String taskBody, int id, boolean taskNew, boolean inProgress, boolean done) {
         super(nameTask, taskBody, id, taskNew, inProgress, done);
