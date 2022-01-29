@@ -1,14 +1,16 @@
+package tracker;
+
 public class Task { // Родительский класс для всех типов задач.
-     protected String nameTask;
-     protected String taskBody;
-     protected int id;
-     protected boolean taskNew;
-     protected boolean inProgress;
-     protected boolean done;
+    protected String nameTask;
+    protected String taskBody;
+    protected int id;
+    protected boolean taskNew;
+    protected boolean inProgress;
+    protected boolean done;
 
     @Override
     public String toString() {
-        return "Task{" +
+        return "tracker.Task{" +
                 "nameTask='" + nameTask + '\'' +
                 ", taskBody='" + taskBody + '\'' +
                 ", id=" + id +

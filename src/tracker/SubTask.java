@@ -1,11 +1,20 @@
-public class SubTask extends Task{ // Подзадача в составе эпика.
+package tracker;
+public class SubTask extends Task { // Подзадача в составе эпика.
 
-    public SubTask(String nameTask, String taskBody, int id, boolean taskNew, boolean inProgress, boolean done) {
+    private Epic epic;
+
+    public SubTask(String nameTask, String taskBody, int id, boolean taskNew, boolean inProgress, boolean done, Epic epic) {
         super(nameTask, taskBody, id, taskNew, inProgress, done);
+        this.epic = epic;
     }
+
+    public Epic getEpic() {
+        return epic;
+    }
+
     @Override
     public String toString() {
-        return "SubTask{" +
+        return "tracker.SubTask{" +
                 "nameTask='" + nameTask + '\'' +
                 ", taskBody='" + taskBody + '\'' +
                 ", id=" + id +
