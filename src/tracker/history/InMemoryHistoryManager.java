@@ -43,7 +43,7 @@ public class InMemoryHistoryManager implements HistoryManager { // запись 
         System.out.println("Task был запрошен " + taskCall + ";" + "\n"
                 + "Epic был запрошен " + epicCall + ";" + "\n"
                 + "SubTusk был запрошен " + subTaskCall + ";" + "\n");
-        System.out.println(historyList + "\n");
+        System.out.println("Печать historyList     " + historyList + "\n");
     }
 
     @Override
