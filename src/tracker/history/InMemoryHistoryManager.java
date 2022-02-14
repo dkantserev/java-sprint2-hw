@@ -22,28 +22,8 @@ public class InMemoryHistoryManager implements HistoryManager { // запись 
     }
 
     @Override
-    public void getHistory() { // Возвращает статистику по запросам
-        Epic epic = new Epic("", "", 0, Status.TASK_NEW);
-        Task task1 = new Task("", "", 0, Status.TASK_NEW);
-        SubTask subTask = new SubTask("", "", 0, Status.TASK_NEW, epic);
-        byte epicCall = 0;
-        byte taskCall = 0;
-        byte subTaskCall = 0;
-        for (Task task : historyList) {
-            if (task.getClass() == epic.getClass()) {
-                epicCall++;
-            }
-            if (task.getClass() == task1.getClass()) {
-                taskCall++;
-            }
-            if (task.getClass() == subTask.getClass()) {
-                subTaskCall++;
-            }
-        }
-        System.out.println("Task был запрошен " + taskCall + ";" + "\n"
-                + "Epic был запрошен " + epicCall + ";" + "\n"
-                + "SubTusk был запрошен " + subTaskCall + ";" + "\n");
-        System.out.println("Печать historyList     " + historyList + "\n");
+    public List<Task> getHistory() { // Возвращает статистику по запросам
+        return historyList;
     }
 
     @Override

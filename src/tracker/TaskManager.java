@@ -1,5 +1,6 @@
 package tracker;
 import tracker.Tasks.Epic;
+import tracker.Tasks.Status;
 import tracker.Tasks.SubTask;
 import tracker.Tasks.Task;
 import tracker.history.HistoryManager;
@@ -10,7 +11,7 @@ public interface TaskManager { // интерфейс менеджера упра
 
     HashMap<Integer, Epic> getEpicMap();
 
-    public HistoryManager getHistoryManager();
+    HistoryManager getHistoryManager();
 
     void updateTask(Task task);
 
@@ -24,11 +25,9 @@ public interface TaskManager { // интерфейс менеджера упра
 
     void addSubTaskMap(SubTask subTask, Epic epic);
 
-    void setStatusProgress(Integer id);
+    void setStatusSubTask(SubTask subTask, Status status);
 
-    void setStatusDone(Integer id);
-
-    void setStatusProgressSubTask(SubTask subTask);
+    void setStatus(Task task,Status status);
 
     void deleteTaskById(Integer id);
 
@@ -40,8 +39,6 @@ public interface TaskManager { // интерфейс менеджера упра
 
     void clearEpicMap();
 
-    void setStatusDoneSubTask(SubTask subTask);
-
     void removeEverythingCompletely();
 
     Epic getEpic(Integer id);
@@ -51,4 +48,5 @@ public interface TaskManager { // интерфейс менеджера упра
     SubTask getSubTask(Integer idEpick, Integer idSubTask);
 
     void printAllTasks();
+
 }

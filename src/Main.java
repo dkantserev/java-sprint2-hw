@@ -33,13 +33,13 @@ public class Main { // Класс для тестирование работы �
         manager.printAllTasks();
         System.out.println(manager.getEpicMap());
         System.out.println(manager.getTaskMap());
-        manager.setStatusDoneSubTask(subTask1);
-        manager.setStatusProgressSubTask(subTask2);
-        manager.setStatusProgress(task1.getId());
+        manager.getEpicMap().get(1).getStatus();
+        manager.setStatusSubTask(subTask1,Status.DONE);
+        manager.setStatus(task1,Status.IN_PROGRESS);
         System.out.println(manager.getEpicMap());
         System.out.println(manager.getTaskMap());
-        manager.setStatusDone(task1.getId());
-        manager.setStatusDoneSubTask(subTask2);
+        manager.setStatus(task1,Status.TASK_NEW);
+        manager.setStatusSubTask(subTask2,Status.IN_PROGRESS);
         manager.getEpic(1);
         manager.getTask(2);
         manager.getSubTask(1, 1);
@@ -63,6 +63,7 @@ public class Main { // Класс для тестирование работы �
         manager.deleteTaskById(2);
         manager.deleteEpicById(2);
         manager.deleteSubTaskById(1, 1);
+        manager.setStatusSubTask(subTask2,Status.DONE);
         System.out.println(manager.getEpicMap());
         System.out.println(manager.getTaskMap());
         manager.removeEverythingCompletely();

@@ -33,57 +33,21 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
         taskMap.put(task.getId(), task);
     }
 
-    private void checkStatusEpic(Epic epic) { // // Проверка корректности статуса Эпика
-        int progress = 0;
-        for (int i = 0; i < epicMap.get(epic.getId()).subTasks.size(); i++) {
-            if (epicMap.get(epic.getId()).subTasks.get(i).getStatus().equals(Status.DONE)) {
-                progress++;
-            }
-            if (progress < epicMap.get(epic.getId()).subTasks.size() && progress > 0) {
-                epicMap.get(epic.getId()).setStatus(Status.IN_PROGRESS);
-
-            }
-            if (progress == epicMap.get(epic.getId()).subTasks.size()) {
-
-                epicMap.get(epic.getId()).setStatus(Status.DONE);
-            }
-        }
-    }
-
-    private void checkStatusSubTask(SubTask subTask) { // Проверка корректности статуса Эпика на основе подзадачи
-        int progress = 0;
-        for (int i = 0; i < epicMap.get(subTask.getEpic().getId()).subTasks.size(); i++) {
-            if (epicMap.get(subTask.getEpic().getId()).subTasks.get(i).getStatus().equals(Status.DONE)) {
-                progress++;
-            }
-            if (progress < epicMap.get(subTask.getEpic().getId()).subTasks.size() && progress > 0) {
-                epicMap.get(subTask.getEpic().getId()).setStatus(Status.IN_PROGRESS);
-            }
-            if (progress == epicMap.get(subTask.getEpic().getId()).subTasks.size()) {
-
-                epicMap.get(subTask.getEpic().getId()).setStatus(Status.DONE);
-            }
-        }
-    }
-
     @Override
     public void updateEpic(Epic epic) { // Обновление объекта Epic
         epic.subTasks = epicMap.get(epic.getId()).subTasks;
         epicMap.put(epic.getId(), epic);
-        checkStatusEpic(epic);
+        epic.getStatus();
     }
-
 
     @Override
     public void updateSubTask(SubTask subTask) { // Обновление объекта Subtask
-
         for (int i = 0; i < epicMap.get(subTask.getEpic().getId()).subTasks.size(); i++) {
             if (epicMap.get(subTask.getEpic().getId()).subTasks.get(i).getId() == subTask.getId()) {
                 epicMap.get(subTask.getEpic().getId()).subTasks.remove(i);
             }
         }
         epicMap.get(subTask.getEpic().getId()).subTasks.add(subTask);
-        checkStatusSubTask(subTask);
     }
 
     @Override
@@ -102,31 +66,15 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
     }
 
     @Override
-    public void setStatusProgress(Integer id) { // Устанавливает значение задачи "в процессе".
-        taskMap.get(id).setStatus(Status.IN_PROGRESS);
+    public void setStatus(Task task, Status status) { // Устанавливает значение задачи
+        taskMap.get(task.getId()).setStatus(status);
     }
 
-    @Override
-    public void setStatusDone(Integer id) { // Устанавливает значение задачи "выполнено".
-        taskMap.get(id).setStatus(Status.DONE);
-    }
-
-    @Override
-    public void setStatusProgressSubTask(SubTask subTask) { //Устанавливает значение подзадачи "в процессе"
-        // , проверяет статус выполнения эпика.
-        int progress = 0;
-
+    public void setStatusSubTask(SubTask subTask, Status status) { // Устанавливает статус подзадачи
         for (int i = 0; i < epicMap.get(subTask.getEpic().getId()).subTasks.size(); i++) {
             if (epicMap.get(subTask.getEpic().getId()).subTasks.get(i) == subTask) {
-                epicMap.get(subTask.getEpic().getId()).subTasks.get(i).setStatus(Status.IN_PROGRESS);
-            }
-        }
-        for (int i = 0; i < epicMap.get(subTask.getEpic().getId()).subTasks.size(); i++) {
-            if (epicMap.get(subTask.getEpic().getId()).subTasks.get(i).getStatus().equals(Status.IN_PROGRESS)) {
-                progress++;
-            }
-            if (progress > 0) {
-                epicMap.get(subTask.getEpic().getId()).setStatus(Status.IN_PROGRESS);
+                epicMap.get(subTask.getEpic().getId()).subTasks.get(i).setStatus(status);
+                epicMap.get(subTask.getEpic().getId()).getStatus();
             }
         }
     }
@@ -152,7 +100,7 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
             } else
                 break;
         }
-        checkStatusEpic(epicMap.get(idEpic));
+        getEpic(idEpic).getStatus();
     }
 
     @Override
@@ -165,17 +113,6 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
         epicMap.clear();
     }
 
-    @Override
-    public void setStatusDoneSubTask(SubTask subTask) { // Устанавливает значение подзадачи "выполнено"
-        // , проверяет статус выполнения эпика.
-        int progress = 0;
-        for (int i = 0; i < epicMap.get(subTask.getEpic().getId()).subTasks.size(); i++) {
-            if (epicMap.get(subTask.getEpic().getId()).subTasks.get(i) == subTask) {
-                epicMap.get(subTask.getEpic().getId()).subTasks.get(i).setStatus(Status.DONE);
-            }
-        }
-        checkStatusSubTask(subTask);
-    }
 
     @Override
     public void removeEverythingCompletely() { // Очищает хранилища.

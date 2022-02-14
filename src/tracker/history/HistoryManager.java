@@ -6,7 +6,7 @@ public interface HistoryManager { // интерфейс менеджера по 
 
     List<Task> addHistory(Task task);
 
-    void getHistory();
+    List<Task> getHistory();
 
     void checkActualHistoryList(Task task);
 

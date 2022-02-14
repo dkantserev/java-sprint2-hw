@@ -10,6 +10,23 @@ public class Epic extends Task { // Грандиозная задача с по�
     }
 
     @Override
+    public Status getStatus() { // получает актуальный статус эпика
+        int progress = 0;
+        for (int i = 0; i < subTasks.size(); i++) {
+            if (subTasks.get(i).getStatus().equals(Status.DONE)) {
+                progress++;
+            }
+            if (progress < subTasks.size() && progress > 0) {
+                setStatus(Status.IN_PROGRESS);
+            }
+            if (progress == subTasks.size()) {
+                setStatus(Status.DONE);
+            }
+        }
+        return status;
+    }
+
+    @Override
     public String toString() {
         return "Epic{" +
 
