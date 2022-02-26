@@ -5,13 +5,25 @@ import tracker.Tasks.Status;
 import tracker.Tasks.SubTask;
 import tracker.Tasks.Task;
 import tracker.history.HistoryManager;
-import java.util.HashMap;
+
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager { // Хранилище всех типов задач, вся логика работы с ними
 
     private HashMap<Integer, Task> taskMap = new HashMap<>();
     private HashMap<Integer, Epic> epicMap = new HashMap<>();
     HistoryManager historyManager = Manager.getDefaultHistory();
+
+    public static Integer generaticId() { // генератор уникальных id
+        HashSet<Integer> id = new HashSet<>();
+        Random random = new Random();
+        int r = 0;
+        while (id.add(r)) {
+            r = random.nextInt(1000);
+        }
+        return r;
+
+    }
 
     @Override
     public HashMap<Integer, Task> getTaskMap() { // геттер хранилища Task
@@ -29,14 +41,14 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
     }
 
     @Override
-    public void updateTask(Task task) { // Обновление объекта Task
-        taskMap.put(task.getId(), task);
+    public void updateTask(Task task, Integer idOldTask) { // Обновление объекта Task
+        taskMap.put(idOldTask, task);
     }
 
     @Override
-    public void updateEpic(Epic epic) { // Обновление объекта Epic
-        epic.subTasks = epicMap.get(epic.getId()).subTasks;
-        epicMap.put(epic.getId(), epic);
+    public void updateEpic(Epic epic, Integer idOldTask) { // Обновление объекта Epic
+        epic.subTasks = epicMap.get(idOldTask).subTasks;
+        epicMap.put(idOldTask, epic);
         epic.getStatus();
     }
 
@@ -81,35 +93,50 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
 
     @Override
     public void deleteTaskById(Integer id) { // Удалить задачу по id.
-        historyManager.checkActualHistoryList(taskMap.get(id));
         taskMap.remove(id);
+        historyManager.removeId(id);
+
     }
 
     @Override
-    public void deleteEpicById(Integer id) { // Удалить эпик по id.
-        historyManager.checkActualHistoryList(epicMap.get(id));
+    public void deleteEpicById(Integer id) { // удалить эпик по id
+        if (epicMap.get(id).subTasks.isEmpty()) {
+            historyManager.removeId(id);
+        } else {
+            for (SubTask subTask : epicMap.get(id).subTasks) {
+                historyManager.removeId(subTask.getId());
+            }
+            historyManager.removeId(id);
+
+        }
         epicMap.remove(id);
     }
 
     @Override
     public void deleteSubTaskById(Integer idEpic, Integer id) { // Удалить подзадачу эпика по id.
-        historyManager.checkActualHistoryList(epicMap.get(idEpic).subTasks.get(id));
-        for (int i = 1; i <= epicMap.get(idEpic).subTasks.size(); i++) {
+
+        for (int i = 0; i < epicMap.get(idEpic).subTasks.size(); i++) {
             if (epicMap.get(idEpic).subTasks.get(i).getId() == id) {
                 epicMap.get(idEpic).subTasks.remove(i);
-            } else
-                break;
+            }
         }
         getEpic(idEpic).getStatus();
+        historyManager.removeId(id);
     }
 
     @Override
     public void clearTaskMap() { // Удалить все задачи.
+        for (Integer integer : taskMap.keySet()) {
+            historyManager.removeId(integer);
+        }
         taskMap.clear();
     }
 
     @Override
     public void clearEpicMap() { // Удалить все эпики.
+        for (Integer integer : epicMap.keySet()) {
+            deleteEpicById(integer);
+        }
         epicMap.clear();
     }
 
@@ -119,6 +146,7 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
         taskMap.clear();
         epicMap.clear();
         historyManager.clearHistory();
+
     }
 
     @Override
@@ -134,50 +162,15 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
     }
 
     @Override
-    public SubTask getSubTask(Integer idEpick, Integer idSubTask) { // геттер
-        historyManager.addHistory(epicMap.get(idEpick).subTasks.get(idSubTask));
-        return epicMap.get(idEpick).subTasks.get(idSubTask);
-    }
-
-    @Override
-    public void printAllTasks() { // Печать всех задач.
-        if (!taskMap.isEmpty()) {
-            for (Integer integer : taskMap.keySet()) {
-                System.out.println("Задача " + taskMap.get(integer).getNameTask() + ". Суть "
-                        + taskMap.get(integer).getTaskBody());
-                if (taskMap.get(integer).getStatus().equals(Status.IN_PROGRESS))
-                    System.out.println("Задача в процессе исполнения.");
-                if (taskMap.get(integer).getStatus().equals(Status.TASK_NEW))
-                    System.out.println("К задаче еще не приступили.");
-                if (taskMap.get(integer).getStatus().equals(Status.DONE))
-                    System.out.println("Задача выполнена.");
+    public SubTask getSubTask(Integer epicId, Integer subTaskId) { // геттер
+        SubTask s = null;
+        for (SubTask subTask : epicMap.get(epicId).subTasks) {
+            if (subTask.getId() == subTaskId) {
+                s = subTask;
+                historyManager.addHistory(s);
             }
         }
-        if (!epicMap.isEmpty()) {
-            for (Integer integer : epicMap.keySet()) {
-                System.out.println("Задача " + epicMap.get(integer).getNameTask() + ". Суть "
-                        + epicMap.get(integer).getTaskBody());
-                if (epicMap.get(integer).getStatus().equals(Status.IN_PROGRESS))
-                    System.out.println("Задача в процессе исполнения.");
-                if (epicMap.get(integer).getStatus().equals(Status.TASK_NEW))
-                    System.out.println("К задаче еще не приступили.");
-                if (epicMap.get(integer).getStatus().equals(Status.DONE))
-                    System.out.println("Задача выполнена.");
-                if (epicMap.get(integer).subTasks.size() > 0) {
-                    for (int i = 0; i < epicMap.get(integer).subTasks.size(); i++) {
-                        System.out.println("Подзадача " + (i + 1) + " " + epicMap.get(integer).subTasks.get(i).getNameTask()
-                                + ". Суть " + epicMap.get(integer).subTasks.get(i).getTaskBody());
-                        if (epicMap.get(integer).subTasks.get(i).getStatus().equals(Status.IN_PROGRESS))
-                            System.out.println("Задача в процессе исполнения.");
-                        if (epicMap.get(integer).subTasks.get(i).getStatus().equals(Status.TASK_NEW))
-                            System.out.println("К задаче еще не приступили.");
-                        if (epicMap.get(integer).subTasks.get(i).getStatus().equals(Status.DONE))
-                            System.out.println("Задача выполнена.");
-                    }
-                }
-
-            }
-        }
+        return s;
     }
 
 }

@@ -58,10 +58,6 @@ public class Task { // Родительский класс для всех ти�
     @Override
     public String toString() {
         return "Task{" +
-                "nameTask='" + nameTask + '\'' +
-                ", taskBody='" + taskBody + '\'' +
-                ", id=" + id +
-                ", status=" + status +
-                '}';
+                "nameTask='" + nameTask + "!!!!!!!!!!!";
     }
 }

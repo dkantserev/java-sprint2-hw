@@ -13,7 +13,7 @@ public class Epic extends Task { // Грандиозная задача с по�
     public Status getStatus() { // получает актуальный статус эпика
         int progress = 0;
         for (SubTask subTask : subTasks) {
-            if(subTask.getStatus().equals(Status.IN_PROGRESS)){
+            if (subTask.getStatus().equals(Status.IN_PROGRESS)) {
                 setStatus(Status.IN_PROGRESS);
             }
         }
@@ -35,11 +35,7 @@ public class Epic extends Task { // Грандиозная задача с по�
     public String toString() {
         return "Epic{" +
 
-                ", nameTask='" + nameTask + '\'' +
-                ", taskBody='" + taskBody + '\'' +
-                ", id=" + id +
-                ", status=" + status +
-                " subTasks=" + subTasks +
-                '}';
+                ", nameTask='" + nameTask + "!!!!!!!!!!!"
+                ;
     }
 }

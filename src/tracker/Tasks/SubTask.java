@@ -16,10 +16,6 @@ public class SubTask extends Task { // Подзадача в составе эп
     @Override
     public String toString() {
         return "SubTask{" +
-                ", nameTask='" + nameTask + '\'' +
-                ", taskBody='" + taskBody + '\'' +
-                ", id=" + id +
-                ", status=" + status +
-                '}';
+                ", nameTask='" + nameTask + "!!!!!!!!!!!";
     }
 }

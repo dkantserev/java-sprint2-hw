@@ -1,9 +1,11 @@
 package tracker;
+
 import tracker.Tasks.Epic;
 import tracker.Tasks.Status;
 import tracker.Tasks.SubTask;
 import tracker.Tasks.Task;
 import tracker.history.HistoryManager;
+
 import java.util.HashMap;
 
 public interface TaskManager { // интерфейс менеджера управляющего хранением и обработкой задач
@@ -13,9 +15,9 @@ public interface TaskManager { // интерфейс менеджера упра
 
     HistoryManager getHistoryManager();
 
-    void updateTask(Task task);
+    void updateTask(Task task, Integer idOldTask);
 
-    void updateEpic(Epic epic);
+    void updateEpic(Epic epic, Integer idOldTask);
 
     void updateSubTask(SubTask subTask);
 
@@ -27,7 +29,7 @@ public interface TaskManager { // интерфейс менеджера упра
 
     void setStatusSubTask(SubTask subTask, Status status);
 
-    void setStatus(Task task,Status status);
+    void setStatus(Task task, Status status);
 
     void deleteTaskById(Integer id);
 
@@ -45,8 +47,7 @@ public interface TaskManager { // интерфейс менеджера упра
 
     Task getTask(Integer id);
 
-    SubTask getSubTask(Integer idEpick, Integer idSubTask);
+    SubTask getSubTask(Integer epicId, Integer subTaskId);
 
-    void printAllTasks();
 
 }

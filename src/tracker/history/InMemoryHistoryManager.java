@@ -1,43 +1,92 @@
 package tracker.history;
-import tracker.Tasks.Status;
-import tracker.Tasks.Epic;
-import tracker.Tasks.SubTask;
-import tracker.Tasks.Task;
-import java.util.ArrayList;
-import java.util.List;
 
-public class InMemoryHistoryManager implements HistoryManager { // запись запросов в историю, печать истории
-    private List<Task> historyList = new ArrayList<>();
+import tracker.Tasks.Task;
+
+import java.util.*;
+
+public class InMemoryHistoryManager implements HistoryManager {
+    private Node<Task> head;
+    private Node<Task> tail;
+    private int size = 0;
+    private Map<Integer, Node<Task>> idNodeMap = new HashMap<>();
+
+    public int getSize() { // геттер размера листа
+        return size;
+    }
 
     @Override
-    public List<Task> addHistory(Task task) { // Добавляет обьект в history
-        if (historyList.size() < 10) {
-            historyList.add(task);
+    public void addHistory(Task task) { // добавляет задачу в историю
+
+        if (idNodeMap.containsKey(task.getId())) {
+            removeId(task.getId());
         }
-        if (historyList.size() >= 10) {
-            historyList.remove(1);
-            historyList.add(task);
+
+        final Node<Task> l = tail;
+        final Node<Task> newNode = new Node<>(task, null, tail);
+        tail = newNode;
+        if (l == null) {
+            head = newNode;
+        } else {
+            l.next = newNode;
         }
-        return historyList;
+
+        idNodeMap.put(task.getId(), newNode);
+        size++;
+
     }
+
 
     @Override
     public List<Task> getHistory() { // Возвращает статистику по запросам
+        List<Task> historyList = new ArrayList<>();
+        Node<Task> firstNode = head;
+        while (firstNode != null) {
+            historyList.add(firstNode.data);
+            firstNode = firstNode.next;
+        }
         return historyList;
     }
 
     @Override
-    public void checkActualHistoryList(Task task) { // Проверка на наличие в истории удаленных задач
-        for (int i = 1; i < historyList.size(); i++) {
-            if (historyList.get(i).equals(task)) {
-                historyList.remove(i);
-            }
+    public void removeId(Integer id) { // удаляет узел через id задачи
+        if (idNodeMap.containsKey(id)) {
+            removeNode(idNodeMap.get(id));
         }
     }
 
-    @Override
-    public void clearHistory() { // очистка истории
-        historyList.clear();
+    private void removeNode(Node<Task> x) { // удаляет узел
+        final Task element = x.data;
+        final Node<Task> next = x.next;
+        final Node<Task> prev = x.previus;
+
+        if (prev == null) {
+            head = next;
+        } else {
+            prev.next = next;
+            x.previus = null;
+        }
+
+        if (next == null) {
+            tail = prev;
+        } else {
+            next.previus = prev;
+            x.next = null;
+        }
+
+        x.data = null;
+        size--;
+    }
+    public void clearHistory (){ // удаляет всю историю
+        for (Node<Task> x = head; x != null; ) {
+            Node<Task> next = x.next;
+            x.data = null;
+            x.next = null;
+            x.previus = null;
+            x = next;
+        }
+        head = tail = null;
+        size = 0;
+
     }
 }
 
