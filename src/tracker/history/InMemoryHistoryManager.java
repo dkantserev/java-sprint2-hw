@@ -10,15 +10,16 @@ public class InMemoryHistoryManager implements HistoryManager {
     private int size = 0;
     private Map<Integer, Node<Task>> idNodeMap = new HashMap<>();
 
+    @Override
     public int getSize() { // геттер размера листа
         return size;
     }
 
     @Override
-    public void addHistory(Task task) { // добавляет задачу в историю
+    public void add(Task task) { // добавляет задачу в историю
 
         if (idNodeMap.containsKey(task.getId())) {
-            removeId(task.getId());
+            remove(task.getId());
         }
 
         final Node<Task> l = tail;
@@ -48,7 +49,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void removeId(Integer id) { // удаляет узел через id задачи
+    public void remove(Integer id) { // удаляет узел через id задачи
         if (idNodeMap.containsKey(id)) {
             removeNode(idNodeMap.get(id));
         }
@@ -76,7 +77,8 @@ public class InMemoryHistoryManager implements HistoryManager {
         x.data = null;
         size--;
     }
-    public void clearHistory (){ // удаляет всю историю
+
+    public void clearHistory() { // удаляет всю историю
         for (Node<Task> x = head; x != null; ) {
             Node<Task> next = x.next;
             x.data = null;

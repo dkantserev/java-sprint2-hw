@@ -94,19 +94,19 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
     @Override
     public void deleteTaskById(Integer id) { // Удалить задачу по id.
         taskMap.remove(id);
-        historyManager.removeId(id);
+        historyManager.remove(id);
 
     }
 
     @Override
     public void deleteEpicById(Integer id) { // удалить эпик по id
         if (epicMap.get(id).subTasks.isEmpty()) {
-            historyManager.removeId(id);
+            historyManager.remove(id);
         } else {
             for (SubTask subTask : epicMap.get(id).subTasks) {
-                historyManager.removeId(subTask.getId());
+                historyManager.remove(subTask.getId());
             }
-            historyManager.removeId(id);
+            historyManager.remove(id);
 
         }
         epicMap.remove(id);
@@ -121,13 +121,13 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
             }
         }
         getEpic(idEpic).getStatus();
-        historyManager.removeId(id);
+        historyManager.remove(id);
     }
 
     @Override
     public void clearTaskMap() { // Удалить все задачи.
         for (Integer integer : taskMap.keySet()) {
-            historyManager.removeId(integer);
+            historyManager.remove(integer);
         }
         taskMap.clear();
     }
@@ -151,13 +151,13 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
 
     @Override
     public Epic getEpic(Integer id) { // геттер
-        historyManager.addHistory(epicMap.get(id));
+        historyManager.add(epicMap.get(id));
         return epicMap.get(id);
     }
 
     @Override
     public Task getTask(Integer id) { // геттер
-        historyManager.addHistory(taskMap.get(id));
+        historyManager.add(taskMap.get(id));
         return taskMap.get(id);
     }
 
@@ -167,7 +167,7 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
         for (SubTask subTask : epicMap.get(epicId).subTasks) {
             if (subTask.getId() == subTaskId) {
                 s = subTask;
-                historyManager.addHistory(s);
+                historyManager.add(s);
             }
         }
         return s;

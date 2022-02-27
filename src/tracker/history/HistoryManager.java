@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface HistoryManager { // интерфейс менеджера по учету запросов задач
 
-    void addHistory(Task task);
+    void add(Task task);
 
     List<Task> getHistory();
 
-    void removeId(Integer id);
+    void remove(Integer id);
 
     int getSize();
 
