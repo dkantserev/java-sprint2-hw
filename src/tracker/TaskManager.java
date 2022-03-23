@@ -25,7 +25,7 @@ public interface TaskManager { // интерфейс менеджера упра
 
     void addEpicToMap(Integer id, Epic epic);
 
-    void addSubTaskMap(SubTask subTask, Epic epic);
+    void addSubTaskMap(SubTask subTask, int epicId);
 
     void setStatusSubTask(SubTask subTask, Status status);
 

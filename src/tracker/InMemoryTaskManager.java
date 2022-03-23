@@ -14,7 +14,8 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
     private HashMap<Integer, Epic> epicMap = new HashMap<>();
     HistoryManager historyManager = Manager.getDefaultHistory();
 
-    public static Integer generaticId() { // генератор уникальных id
+
+    public static Integer generaticId() {
         HashSet<Integer> id = new HashSet<>();
         Random random = new Random();
         int r = 0;
@@ -22,6 +23,7 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
             r = random.nextInt(1000);
         }
         return r;
+
 
     }
 
@@ -54,12 +56,12 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
 
     @Override
     public void updateSubTask(SubTask subTask) { // Обновление объекта Subtask
-        for (int i = 0; i < epicMap.get(subTask.getEpic().getId()).subTasks.size(); i++) {
-            if (epicMap.get(subTask.getEpic().getId()).subTasks.get(i).getId() == subTask.getId()) {
-                epicMap.get(subTask.getEpic().getId()).subTasks.remove(i);
+        for (int i = 0; i < epicMap.get(subTask.getEpic()).subTasks.size(); i++) {
+            if (epicMap.get(subTask.getEpic()).subTasks.get(i).getId() == subTask.getId()) {
+                epicMap.get(subTask.getEpic()).subTasks.remove(i);
             }
         }
-        epicMap.get(subTask.getEpic().getId()).subTasks.add(subTask);
+        epicMap.get(subTask.getEpic()).subTasks.add(subTask);
     }
 
     @Override
@@ -73,8 +75,8 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
     }
 
     @Override
-    public void addSubTaskMap(SubTask subTask, Epic epic) { // Добавляет подзадачу к эпику.
-        epic.subTasks.add(subTask);
+    public void addSubTaskMap(SubTask subTask, int epicId) { // Добавляет подзадачу к эпику.
+        getEpicMap().get(epicId).subTasks.add(subTask);
     }
 
     @Override
@@ -83,10 +85,10 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
     }
 
     public void setStatusSubTask(SubTask subTask, Status status) { // Устанавливает статус подзадачи
-        for (int i = 0; i < epicMap.get(subTask.getEpic().getId()).subTasks.size(); i++) {
-            if (epicMap.get(subTask.getEpic().getId()).subTasks.get(i) == subTask) {
-                epicMap.get(subTask.getEpic().getId()).subTasks.get(i).setStatus(status);
-                epicMap.get(subTask.getEpic().getId()).getStatus();
+        for (int i = 0; i < epicMap.get(subTask.getEpic()).subTasks.size(); i++) {
+            if (epicMap.get(subTask.getEpic()).subTasks.get(i) == subTask) {
+                epicMap.get(subTask.getEpic()).subTasks.get(i).setStatus(status);
+                epicMap.get(subTask.getEpic()).getStatus();
             }
         }
     }

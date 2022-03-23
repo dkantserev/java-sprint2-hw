@@ -5,12 +5,22 @@ public class Task { // Родительский класс для всех ти�
     protected String taskBody;
     protected int id;
     protected Status status;
+    protected TypeTask typeTask ;
 
-    public Task(String nameTask, String taskBody, int id, Status status) {
+    public TypeTask getTypeTask() {
+        return typeTask;
+    }
+
+
+
+    public Task(TypeTask typeTask,String nameTask, String taskBody, int id, Status status) {
         this.nameTask = nameTask;
         this.taskBody = taskBody;
         this.id = id;
         this.status = status;
+        this.typeTask=typeTask;
+
+
     }
 
     public String getNameTask() {
@@ -57,7 +67,11 @@ public class Task { // Родительский класс для всех ти�
 
     @Override
     public String toString() {
-        return "Task{" +
-                "nameTask='" + nameTask + "!!!!!!!!!!!";
+        return typeTask + ","+
+                id + ","+
+                nameTask + ","+
+                taskBody + ","+
+                status
+              ;
     }
 }

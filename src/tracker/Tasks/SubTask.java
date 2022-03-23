@@ -2,20 +2,27 @@ package tracker.Tasks;
 
 public class SubTask extends Task { // Подзадача в составе эпика.
 
-    private Epic epic;
+    private int epic;
 
-    public SubTask(String nameTask, String taskBody, int id, Status status, Epic epic) {
-        super(nameTask, taskBody, id, status);
+
+    public SubTask(TypeTask typeTask,String nameTask, String taskBody, int id, Status status, int epic) {
+        super(typeTask,nameTask, taskBody, id, status);
         this.epic = epic;
+        this.typeTask=typeTask;
     }
 
-    public Epic getEpic() {
+    public int getEpic() {
         return epic;
     }
 
     @Override
     public String toString() {
-        return "SubTask{" +
-                ", nameTask='" + nameTask + "!!!!!!!!!!!";
+        return typeTask + "," +
+                id + "," +
+                nameTask + "," +
+                taskBody + "," +
+                status +"," +
+                epic
+                ;
     }
 }
