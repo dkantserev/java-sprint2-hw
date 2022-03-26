@@ -12,7 +12,7 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
 
     private HashMap<Integer, Task> taskMap = new HashMap<>();
     private HashMap<Integer, Epic> epicMap = new HashMap<>();
-    HistoryManager historyManager = Manager.getDefaultHistory();
+    private HistoryManager historyManager = Manager.getDefaultHistory();
 
 
     public static Integer generaticId() {
@@ -23,8 +23,6 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
             r = random.nextInt(1000);
         }
         return r;
-
-
     }
 
     @Override
@@ -97,7 +95,6 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
     public void deleteTaskById(Integer id) { // Удалить задачу по id.
         taskMap.remove(id);
         historyManager.remove(id);
-
     }
 
     @Override
@@ -109,7 +106,6 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
                 historyManager.remove(subTask.getId());
             }
             historyManager.remove(id);
-
         }
         epicMap.remove(id);
     }
@@ -148,7 +144,6 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
         taskMap.clear();
         epicMap.clear();
         historyManager.clearHistory();
-
     }
 
     @Override
@@ -174,5 +169,4 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
         }
         return s;
     }
-
 }

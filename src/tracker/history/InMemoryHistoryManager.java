@@ -1,6 +1,6 @@
 package tracker.history;
 
-import com.sun.source.doctree.LiteralTree;
+
 import tracker.Tasks.Task;
 
 import java.util.*;
@@ -59,19 +59,19 @@ public class InMemoryHistoryManager implements HistoryManager {
     private void removeNode(Node<Task> x) { // удаляет узел
         final Task element = x.data;
         final Node<Task> next = x.next;
-        final Node<Task> prev = x.previus;
+        final Node<Task> prev = x.previous;
 
         if (prev == null) {
             head = next;
         } else {
             prev.next = next;
-            x.previus = null;
+            x.previous = null;
         }
 
         if (next == null) {
             tail = prev;
         } else {
-            next.previus = prev;
+            next.previous = prev;
             x.next = null;
         }
 
@@ -84,7 +84,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             Node<Task> next = x.next;
             x.data = null;
             x.next = null;
-            x.previus = null;
+            x.previous = null;
             x = next;
         }
         head = tail = null;

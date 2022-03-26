@@ -6,9 +6,8 @@ public class Epic extends Task { // Грандиозная задача с по�
     public ArrayList<SubTask> subTasks = new ArrayList<>();
 
 
-    public Epic(TypeTask typeTask,String nameTask, String taskBody, int id, Status status) {
-        super(typeTask,nameTask, taskBody, id, status);
-
+    public Epic(TypeTask typeTask, String nameTask, String taskBody, int id, Status status) {
+        super(typeTask, nameTask, taskBody, id, status);
 
 
     }
@@ -37,11 +36,11 @@ public class Epic extends Task { // Грандиозная задача с по�
 
     @Override
     public String toString() {
-        return typeTask + ","+
-                 id + ","+
-                 nameTask + ","+
-                 taskBody + ","+
-                 status
+        return typeTask + "," +
+                id + "," +
+                nameTask + "," +
+                taskBody + "," +
+                status
                 ;
     }
 }
