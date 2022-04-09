@@ -1,15 +1,50 @@
 package tracker.Tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+
 
 public class Epic extends Task { // Грандиозная задача с подзадачами.
     public ArrayList<SubTask> subTasks = new ArrayList<>();
 
 
-    public Epic(TypeTask typeTask, String nameTask, String taskBody, int id, Status status) {
-        super(typeTask, nameTask, taskBody, id, status);
+    public Epic(TypeTask typeTask, String nameTask, String taskBody, int id, Status status, ZonedDateTime startTime, Duration duration) {
+        super(typeTask, nameTask, taskBody, id, status,startTime,duration);
 
 
+    }
+
+    @Override
+    public ZonedDateTime getEndTime() {
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.of(1,1,1,1,1),ZoneId.systemDefault());
+        if(subTasks.isEmpty()){
+            return super.getEndTime();
+        }
+        for (SubTask subTask : subTasks) {
+            if(zonedDateTime.isBefore(subTask.getEndTime())){
+                zonedDateTime=subTask.getEndTime();
+            }
+        }
+        return zonedDateTime;
+    }
+
+    @Override
+    public ZonedDateTime getStartTime() {
+        ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.of(1111111,1,1,1,1),ZoneId.systemDefault());
+       if(subTasks.isEmpty()){
+           return startTime;
+       }
+       else{
+           for (SubTask subTask : subTasks) {
+               if(subTask.getStartTime().isBefore(zonedDateTime)){
+                   zonedDateTime=subTask.getStartTime();
+               }
+           }
+       }
+       return zonedDateTime;
     }
 
     @Override
@@ -40,7 +75,9 @@ public class Epic extends Task { // Грандиозная задача с по�
                 id + "," +
                 nameTask + "," +
                 taskBody + "," +
-                status
+                status + "," +
+                startTime + "," +
+                duration
                 ;
     }
 }

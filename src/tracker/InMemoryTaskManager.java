@@ -1,9 +1,6 @@
 package tracker;
 
-import tracker.Tasks.Epic;
-import tracker.Tasks.Status;
-import tracker.Tasks.SubTask;
-import tracker.Tasks.Task;
+import tracker.Tasks.*;
 import tracker.history.HistoryManager;
 
 import java.util.*;
@@ -23,6 +20,51 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
             r = random.nextInt(1000);
         }
         return r;
+    }
+
+    public Boolean overlappingTask(Task task) {
+
+        if(task.getTypeTask().equals(TypeTask.TYPE_EPIC)){
+            task =(Epic)task;
+        }
+        for (Task value : taskMap.values()) {
+            if(task.getStartTime().isBefore(value.getStartTime())&&task.getEndTime().isAfter(value.getStartTime())){
+                return true;
+            }
+            if(task.getStartTime().isBefore(value.getEndTime())&&task.getEndTime().isAfter(value.getEndTime())){
+                return true;
+            }
+            if(task.getStartTime().equals(value.getStartTime())&&task.getEndTime().equals(value.getEndTime())){
+                return true;
+            }
+        }
+        for (Epic value1 : epicMap.values()) {
+            if(task.getStartTime().isBefore(value1.getStartTime())&&task.getEndTime().isAfter(value1.getStartTime())&&value1.subTasks.contains((SubTask) task)){
+                return true;
+            }
+            if(task.getStartTime().isBefore(value1.getEndTime())&&task.getEndTime().isAfter(value1.getEndTime())&&value1.subTasks.contains((SubTask) task)){
+                return true;
+            }
+            if(task.getStartTime().equals(value1.getStartTime())&&task.getEndTime().equals(value1.getEndTime())&&value1.subTasks.contains((SubTask) task)){
+                return true;
+            }
+        }
+        for (Epic value : epicMap.values()) {
+            for (SubTask value2 : value.subTasks) {
+                if(task.getStartTime().isBefore(value2.getStartTime())&&task.getEndTime().isAfter(value2.getStartTime())&&value2.getEpic()!=task.getId()){
+                    return true;
+                }
+                if(task.getStartTime().isBefore(value2.getEndTime())&&task.getEndTime().isAfter(value2.getEndTime())&&value2.getEpic()!=task.getId()){
+                    return true;
+                }
+                if(task.getStartTime().equals(value2.getStartTime())&&task.getEndTime().equals(value2.getEndTime())&&value2.getEpic()!=task.getId()){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+
     }
 
     @Override
@@ -64,17 +106,23 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
 
     @Override
     public void addTaskToMap(Integer id, Task task) { // Задача помещается в хранилищею
-        taskMap.put(id, task);
+        if(!overlappingTask(task)) {
+            taskMap.put(id, task);
+        }
     }
 
     @Override
     public void addEpicToMap(Integer id, Epic epic) { // Эпик помещается в хранилище.
-        epicMap.put(id, epic);
+        if(!overlappingTask(epic)) {
+            epicMap.put(id, epic);
+        }
     }
 
     @Override
     public void addSubTaskMap(SubTask subTask, int epicId) { // Добавляет подзадачу к эпику.
-        getEpicMap().get(epicId).subTasks.add(subTask);
+        if(!overlappingTask(subTask)) {
+            getEpicMap().get(epicId).subTasks.add(subTask);
+        }
     }
 
     @Override
