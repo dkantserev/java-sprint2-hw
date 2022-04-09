@@ -2,6 +2,7 @@ package tracker.Tasks;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Task { // Родительский класс для всех типов задач.
     protected String nameTask;
@@ -11,6 +12,7 @@ public class Task { // Родительский класс для всех ти�
     protected TypeTask typeTask ;
     protected ZonedDateTime startTime;
     protected Duration duration;
+    protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-hh-mm");
 
     public TypeTask getTypeTask() {
         return typeTask;
@@ -89,7 +91,7 @@ public class Task { // Родительский класс для всех ти�
                 nameTask + ","+
                 taskBody + ","+
                 status + ","+
-                startTime + ","+
+                startTime.format(formatter) + ","+
                 duration
               ;
     }

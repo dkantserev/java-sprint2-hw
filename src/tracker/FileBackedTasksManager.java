@@ -1,4 +1,4 @@
-/*package tracker;
+package tracker;
 
 import tracker.Tasks.*;
 import tracker.exception.ManagerSaveException;
@@ -6,9 +6,15 @@ import tracker.history.HistoryManager;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 
 public class FileBackedTasksManager extends InMemoryTaskManager { // класс с функцией загрузки из файла
@@ -22,12 +28,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager { // класс 
         System.out.println("\n");
         System.out.println(manager.getHistoryManager().getHistory());
         System.out.println(manager.getHistoryManager().getSize());
-        Task task44 = new Task(TypeTask.TYPE_TASK, "Таск44", "задача",
-                InMemoryTaskManager.generaticId(), Status.TASK_NEW);
-        manager.addTaskToMap(task44.getId(), task44);
-        manager.getTask(task44.getId());
+
         System.out.println(manager.getHistoryManager().getHistory());
         System.out.println(manager.getHistoryManager().getSize());
+        System.out.println((manager.getPrioritizedTasks()));
     }
 
     private File file;
@@ -39,7 +43,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager { // класс 
 
     private static Task fromString(String readLine) { //создает Task из строки
         Task task;
+
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm", Locale.ENGLISH);
         String[] split = readLine.split(",");
+
+        ZonedDateTime zonedDateTime;
+        Duration duration;
         Status status = Status.DONE;
         if (split[4].equals("IN_PROGRESS")) {
             status = Status.IN_PROGRESS;
@@ -66,13 +76,19 @@ public class FileBackedTasksManager extends InMemoryTaskManager { // класс 
 
         if (typeTask.equals(TypeTask.TYPE_SUBTASK)) {
             int s = Integer.parseInt(split[5]);
-            return new SubTask(typeTask, split[2], split[3], x, status, s);
+            zonedDateTime = ZonedDateTime.of(LocalDateTime.parse(split[6], formatter), ZoneId.systemDefault());
+            duration = Duration.parse(split[7]);
+            return new SubTask(typeTask, split[2], split[3], x, status, s, zonedDateTime, duration);
         }
 
         if (typeTask.equals(TypeTask.TYPE_EPIC)) {
-            return new Epic(typeTask, split[2], split[3], x, status);
+            zonedDateTime = ZonedDateTime.of(LocalDateTime.parse(split[5], formatter), ZoneId.systemDefault());
+            duration = Duration.parse(split[6]);
+            return new Epic(typeTask, split[2], split[3], x, status, zonedDateTime, duration);
         } else {
-            task = new Task(typeTask, split[2], split[3], x, status);
+            zonedDateTime = ZonedDateTime.of(LocalDateTime.parse(split[5], formatter), ZoneId.systemDefault());
+            duration = Duration.parse(split[6]);
+            task = new Task(typeTask, split[2], split[3], x, status, zonedDateTime, duration);
         }
         return task;
     }
@@ -112,6 +128,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager { // класс 
                         break;
                     }
                     case "h": {
+                        for (SubTask subTask : listSub) {
+                            if (getEpicMap().containsKey(subTask.getEpic())) {
+                                addSubTaskMap(subTask, subTask.getEpic());
+                            }
+                        }
                         if (!fromStringHistory(line).isEmpty()) {
                             for (int o : fromStringHistory(line)) {
                                 if (getTaskMap().containsKey(o)) {
@@ -135,11 +156,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager { // класс 
             }
         } catch (IOException r) {
             throw new ManagerSaveException(r.getMessage());
-        }
-        for (SubTask subTask : listSub) {
-            if (getEpicMap().containsKey(subTask.getEpic())) {
-                addSubTaskMap(subTask, subTask.getEpic());
-            }
         }
     }
 
@@ -211,8 +227,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager { // класс 
 
     @Override
     public HistoryManager getHistoryManager() {
-        save();
         return super.getHistoryManager();
+
     }
 
     private HistoryManager getHistoryManagerSave() {
@@ -304,20 +320,28 @@ public class FileBackedTasksManager extends InMemoryTaskManager { // класс 
 
     @Override
     public Epic getEpic(Integer id) {
-        save();
-        return super.getEpic(id);
+        try {
+            return super.getEpic(id);
+        } finally {
+            save();
+        }
     }
 
     @Override
     public Task getTask(Integer id) {
-        save();
-        return super.getTask(id);
+        try {
+            return super.getTask(id);
+        } finally {
+            save();
+        }
     }
 
     @Override
     public SubTask getSubTask(Integer epicId, Integer subTaskId) {
-        save();
-        return super.getSubTask(epicId, subTaskId);
+        try {
+            return super.getSubTask(epicId, subTaskId);
+        } finally {
+            save();
+        }
     }
 }
-*/

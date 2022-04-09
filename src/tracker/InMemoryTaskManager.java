@@ -7,9 +7,19 @@ import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager { // Хранилище всех типов задач, вся логика работы с ними
 
-    private HashMap<Integer, Task> taskMap = new HashMap<>();
-    private HashMap<Integer, Epic> epicMap = new HashMap<>();
-    private HistoryManager historyManager = Manager.getDefaultHistory();
+    private final HashMap<Integer, Task> taskMap = new HashMap<>();
+    private final HashMap<Integer, Epic> epicMap = new HashMap<>();
+    private final HistoryManager historyManager = Manager.getDefaultHistory();
+    private final TreeSet<Task> setTask =new TreeSet<>(Comparator.comparing(Task::getStartTime));
+
+    public TreeSet<Task> getPrioritizedTasks(){ // список задач по приоритету начала
+        setTask.addAll(taskMap.values());
+        for (Epic value : epicMap.values()) {
+            setTask.add(value);
+            setTask.addAll(value.subTasks);
+        }
+        return setTask;
+    }
 
 
     public static Integer generaticId() {
@@ -24,40 +34,40 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
 
     public Boolean overlappingTask(Task task) {
 
-        if(task.getTypeTask().equals(TypeTask.TYPE_EPIC)){
-            task =(Epic)task;
+        if (task.getTypeTask().equals(TypeTask.TYPE_EPIC)) {
+            task = (Epic) task;
         }
         for (Task value : taskMap.values()) {
-            if(task.getStartTime().isBefore(value.getStartTime())&&task.getEndTime().isAfter(value.getStartTime())){
+            if (task.getStartTime().isBefore(value.getStartTime()) && task.getEndTime().isAfter(value.getStartTime())) {
                 return true;
             }
-            if(task.getStartTime().isBefore(value.getEndTime())&&task.getEndTime().isAfter(value.getEndTime())){
+            if (task.getStartTime().isBefore(value.getEndTime()) && task.getEndTime().isAfter(value.getEndTime())) {
                 return true;
             }
-            if(task.getStartTime().equals(value.getStartTime())&&task.getEndTime().equals(value.getEndTime())){
+            if (task.getStartTime().equals(value.getStartTime()) && task.getEndTime().equals(value.getEndTime())) {
                 return true;
             }
         }
         for (Epic value1 : epicMap.values()) {
-            if(task.getStartTime().isBefore(value1.getStartTime())&&task.getEndTime().isAfter(value1.getStartTime())&&value1.subTasks.contains((SubTask) task)){
+            if (task.getStartTime().isBefore(value1.getStartTime()) && task.getEndTime().isAfter(value1.getStartTime()) && value1.subTasks.contains((SubTask) task)) {
                 return true;
             }
-            if(task.getStartTime().isBefore(value1.getEndTime())&&task.getEndTime().isAfter(value1.getEndTime())&&value1.subTasks.contains((SubTask) task)){
+            if (task.getStartTime().isBefore(value1.getEndTime()) && task.getEndTime().isAfter(value1.getEndTime()) && value1.subTasks.contains((SubTask) task)) {
                 return true;
             }
-            if(task.getStartTime().equals(value1.getStartTime())&&task.getEndTime().equals(value1.getEndTime())&&value1.subTasks.contains((SubTask) task)){
+            if (task.getStartTime().equals(value1.getStartTime()) && task.getEndTime().equals(value1.getEndTime()) && value1.subTasks.contains((SubTask) task)) {
                 return true;
             }
         }
         for (Epic value : epicMap.values()) {
             for (SubTask value2 : value.subTasks) {
-                if(task.getStartTime().isBefore(value2.getStartTime())&&task.getEndTime().isAfter(value2.getStartTime())&&value2.getEpic()!=task.getId()){
+                if (task.getStartTime().isBefore(value2.getStartTime()) && task.getEndTime().isAfter(value2.getStartTime()) && value2.getEpic() != task.getId()) {
                     return true;
                 }
-                if(task.getStartTime().isBefore(value2.getEndTime())&&task.getEndTime().isAfter(value2.getEndTime())&&value2.getEpic()!=task.getId()){
+                if (task.getStartTime().isBefore(value2.getEndTime()) && task.getEndTime().isAfter(value2.getEndTime()) && value2.getEpic() != task.getId()) {
                     return true;
                 }
-                if(task.getStartTime().equals(value2.getStartTime())&&task.getEndTime().equals(value2.getEndTime())&&value2.getEpic()!=task.getId()){
+                if (task.getStartTime().equals(value2.getStartTime()) && task.getEndTime().equals(value2.getEndTime()) && value2.getEpic() != task.getId()) {
                     return true;
                 }
             }
@@ -106,21 +116,21 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
 
     @Override
     public void addTaskToMap(Integer id, Task task) { // Задача помещается в хранилищею
-        if(!overlappingTask(task)) {
+        if (!overlappingTask(task)) {
             taskMap.put(id, task);
         }
     }
 
     @Override
     public void addEpicToMap(Integer id, Epic epic) { // Эпик помещается в хранилище.
-        if(!overlappingTask(epic)) {
+        if (!overlappingTask(epic)) {
             epicMap.put(id, epic);
         }
     }
 
     @Override
     public void addSubTaskMap(SubTask subTask, int epicId) { // Добавляет подзадачу к эпику.
-        if(!overlappingTask(subTask)) {
+        if (!overlappingTask(subTask)) {
             getEpicMap().get(epicId).subTasks.add(subTask);
         }
     }
@@ -196,25 +206,35 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
 
     @Override
     public Epic getEpic(Integer id) { // геттер
-        historyManager.add(epicMap.get(id));
-        return epicMap.get(id);
+        try {
+            return epicMap.get(id);
+        }finally {
+            historyManager.add(epicMap.get(id));
+        }
     }
 
     @Override
     public Task getTask(Integer id) { // геттер
-        historyManager.add(taskMap.get(id));
-        return taskMap.get(id);
+       try {
+           return taskMap.get(id);
+       }finally {
+           historyManager.add(taskMap.get(id));
+       }
     }
 
     @Override
     public SubTask getSubTask(Integer epicId, Integer subTaskId) { // геттер
-        SubTask s = null;
-        for (SubTask subTask : epicMap.get(epicId).subTasks) {
-            if (subTask.getId() == subTaskId) {
-                s = subTask;
-                historyManager.add(s);
+
+            SubTask s = null;
+        try {
+            for (SubTask subTask : epicMap.get(epicId).subTasks) {
+                if (subTask.getId() == subTaskId) {
+                    s = subTask;
+                }
             }
+            return s;
+        }finally {
+            historyManager.add(s);
         }
-        return s;
     }
 }

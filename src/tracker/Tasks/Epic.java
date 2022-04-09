@@ -76,7 +76,7 @@ public class Epic extends Task { // Грандиозная задача с по�
                 nameTask + "," +
                 taskBody + "," +
                 status + "," +
-                startTime + "," +
+                startTime.format(formatter) + "," +
                 duration
                 ;
     }

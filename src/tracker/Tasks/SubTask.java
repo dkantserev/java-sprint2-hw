@@ -5,7 +5,7 @@ import java.time.ZonedDateTime;
 
 public class SubTask extends Task { // Подзадача в составе эпика.
 
-    private int epic;
+    private final int epic;
 
 
     public SubTask(TypeTask typeTask, String nameTask, String taskBody, int id, Status status, int epic, ZonedDateTime startTime, Duration duration) {
@@ -26,7 +26,7 @@ public class SubTask extends Task { // Подзадача в составе эп
                 taskBody + "," +
                 status +"," +
                 epic + "," +
-                startTime + "," +
+                startTime.format(formatter) + "," +
                 duration
                 ;
     }
