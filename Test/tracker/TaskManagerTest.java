@@ -66,6 +66,20 @@ class TaskManagerTest<C extends TaskManager> {
     }
 
     @Test
+    void clearHistory(){
+        taskManager.getHistoryManager().clearHistory();
+        assertEquals(taskManager.getHistoryManager().getHistory().size(),0,"история не очищена");
+    }
+
+    @Test
+    void duplicationHistory(){
+        taskManager.getTask(task.getId());
+        taskManager.getTask(task.getId());
+        taskManager.getTask(task.getId());
+        assertEquals(taskManager.getHistoryManager().getSize(),1,"дублирование задач в истории");
+    }
+
+    @Test
     void updateTask() {
         Task taskUpdate = new Task(TypeTask.TYPE_TASK, "testTask1", "...", 1, Status.TASK_NEW
                 , ZonedDateTime.of(LocalDateTime.of(2030, 1, 1, 21, 1), zoneId)
