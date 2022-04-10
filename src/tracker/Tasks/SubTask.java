@@ -7,11 +7,11 @@ public class SubTask extends Task { // Подзадача в составе эп
 
     private final int epic;
 
-
-    public SubTask(TypeTask typeTask, String nameTask, String taskBody, int id, Status status, int epic, ZonedDateTime startTime, Duration duration) {
-        super(typeTask,nameTask, taskBody, id, status,startTime,duration);
+    public SubTask(TypeTask typeTask, String nameTask, String taskBody, int id, Status status, int epic
+            , ZonedDateTime startTime, Duration duration) {
+        super(typeTask, nameTask, taskBody, id, status, startTime, duration);
         this.epic = epic;
-        this.typeTask=typeTask;
+        this.typeTask = typeTask;
     }
 
     public int getEpic() {
@@ -24,7 +24,7 @@ public class SubTask extends Task { // Подзадача в составе эп
                 id + "," +
                 nameTask + "," +
                 taskBody + "," +
-                status +"," +
+                status + "," +
                 epic + "," +
                 startTime.format(formatter) + "," +
                 duration

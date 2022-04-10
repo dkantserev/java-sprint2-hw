@@ -24,11 +24,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager { // класс 
         FileBackedTasksManager manager = loadFromFile(file);
         System.out.println(manager.getTaskMap());
         System.out.println(manager.getEpicMap());
-        manager.getSubTaskMap();
         System.out.println("\n");
         System.out.println(manager.getHistoryManager().getHistory());
         System.out.println(manager.getHistoryManager().getSize());
-
         System.out.println(manager.getHistoryManager().getHistory());
         System.out.println(manager.getHistoryManager().getSize());
         System.out.println((manager.getPrioritizedTasks()));
@@ -40,14 +38,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager { // класс 
         this.file = file;
     }
 
-
     private static Task fromString(String readLine) { //создает Task из строки
         Task task;
-
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm", Locale.ENGLISH);
         String[] split = readLine.split(",");
-
         ZonedDateTime zonedDateTime;
         Duration duration;
         Status status = Status.DONE;
@@ -93,7 +87,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager { // класс 
         return task;
     }
 
-    private static FileBackedTasksManager loadFromFile(File file) { //возвращает загруженный из файла FileBackedTasksManager
+    protected static FileBackedTasksManager loadFromFile(File file) { //возвращает загруженный из файла FileBackedTasksManager
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file);
         fileBackedTasksManager.load(file);
         return fileBackedTasksManager;
@@ -155,15 +149,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager { // класс 
                 }
             }
         } catch (IOException r) {
-            throw new ManagerSaveException(r.getMessage());
-        }
-    }
-
-    public void getSubTaskMap() { //выводит все подзадачи
-        for (Integer integer : getEpicMap().keySet()) {
-            for (SubTask subTask : getEpicMap().get(integer).subTasks) {
-                System.out.println(subTask);
-            }
+            throw new ManagerSaveException("ошибка загрузки из файла");
         }
     }
 
@@ -191,7 +177,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager { // класс 
         }
         return array;
     }
-
 
     private void save() { // сохраняет изменения в файл
         try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) {

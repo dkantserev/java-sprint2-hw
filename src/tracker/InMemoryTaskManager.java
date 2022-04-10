@@ -1,6 +1,7 @@
 package tracker;
 
 import tracker.Tasks.*;
+import tracker.exception.OverlappingException;
 import tracker.history.HistoryManager;
 
 import java.util.*;
@@ -10,20 +11,19 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
     private final HashMap<Integer, Task> taskMap = new HashMap<>();
     private final HashMap<Integer, Epic> epicMap = new HashMap<>();
     private final HistoryManager historyManager = Manager.getDefaultHistory();
-    private final TreeSet<Task> setTask =new TreeSet<>(Comparator.comparing(Task::getStartTime));
+    private final TreeSet<Task> setTask = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
-    public TreeSet<Task> getPrioritizedTasks(){ // список задач по приоритету начала
+    @Override
+    public TreeSet<Task> getPrioritizedTasks() { // список задач по приоритету начала
         setTask.addAll(taskMap.values());
         for (Epic value : epicMap.values()) {
-            setTask.add(value);
             setTask.addAll(value.subTasks);
         }
         return setTask;
     }
 
-
     public static Integer generaticId() {
-        HashSet<Integer> id = new HashSet<>();
+        HashSet<Integer> id = new HashSet<>(1000);
         Random random = new Random();
         int r = 0;
         while (id.add(r)) {
@@ -32,6 +32,7 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
         return r;
     }
 
+    @Override
     public Boolean overlappingTask(Task task) {
 
         if (task.getTypeTask().equals(TypeTask.TYPE_EPIC)) {
@@ -49,25 +50,31 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
             }
         }
         for (Epic value1 : epicMap.values()) {
-            if (task.getStartTime().isBefore(value1.getStartTime()) && task.getEndTime().isAfter(value1.getStartTime()) && value1.subTasks.contains((SubTask) task)) {
+            if (task.getStartTime().isBefore(value1.getStartTime()) && task.getEndTime().isAfter(value1.getStartTime())
+                    && value1.subTasks.contains((SubTask) task)) {
                 return true;
             }
-            if (task.getStartTime().isBefore(value1.getEndTime()) && task.getEndTime().isAfter(value1.getEndTime()) && value1.subTasks.contains((SubTask) task)) {
+            if (task.getStartTime().isBefore(value1.getEndTime()) && task.getEndTime().isAfter(value1.getEndTime())
+                    && value1.subTasks.contains((SubTask) task)) {
                 return true;
             }
-            if (task.getStartTime().equals(value1.getStartTime()) && task.getEndTime().equals(value1.getEndTime()) && value1.subTasks.contains((SubTask) task)) {
+            if (task.getStartTime().equals(value1.getStartTime()) && task.getEndTime().equals(value1.getEndTime())
+                    && value1.subTasks.contains((SubTask) task)) {
                 return true;
             }
         }
         for (Epic value : epicMap.values()) {
             for (SubTask value2 : value.subTasks) {
-                if (task.getStartTime().isBefore(value2.getStartTime()) && task.getEndTime().isAfter(value2.getStartTime()) && value2.getEpic() != task.getId()) {
+                if (task.getStartTime().isBefore(value2.getStartTime()) && task.getEndTime()
+                        .isAfter(value2.getStartTime()) && value2.getEpic() != task.getId()) {
                     return true;
                 }
-                if (task.getStartTime().isBefore(value2.getEndTime()) && task.getEndTime().isAfter(value2.getEndTime()) && value2.getEpic() != task.getId()) {
+                if (task.getStartTime().isBefore(value2.getEndTime()) && task.getEndTime().isAfter(value2.getEndTime())
+                        && value2.getEpic() != task.getId()) {
                     return true;
                 }
-                if (task.getStartTime().equals(value2.getStartTime()) && task.getEndTime().equals(value2.getEndTime()) && value2.getEpic() != task.getId()) {
+                if (task.getStartTime().equals(value2.getStartTime()) && task.getEndTime().equals(value2.getEndTime())
+                        && value2.getEpic() != task.getId()) {
                     return true;
                 }
             }
@@ -118,6 +125,8 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
     public void addTaskToMap(Integer id, Task task) { // Задача помещается в хранилищею
         if (!overlappingTask(task)) {
             taskMap.put(id, task);
+        } else {
+            throw new OverlappingException("пересечение времени");
         }
     }
 
@@ -125,6 +134,8 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
     public void addEpicToMap(Integer id, Epic epic) { // Эпик помещается в хранилище.
         if (!overlappingTask(epic)) {
             epicMap.put(id, epic);
+        } else {
+            throw new OverlappingException("пересечение времени");
         }
     }
 
@@ -132,6 +143,8 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
     public void addSubTaskMap(SubTask subTask, int epicId) { // Добавляет подзадачу к эпику.
         if (!overlappingTask(subTask)) {
             getEpicMap().get(epicId).subTasks.add(subTask);
+        } else {
+            throw new OverlappingException("пересечение времени");
         }
     }
 
@@ -208,24 +221,24 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
     public Epic getEpic(Integer id) { // геттер
         try {
             return epicMap.get(id);
-        }finally {
+        } finally {
             historyManager.add(epicMap.get(id));
         }
     }
 
     @Override
     public Task getTask(Integer id) { // геттер
-       try {
-           return taskMap.get(id);
-       }finally {
-           historyManager.add(taskMap.get(id));
-       }
+        try {
+            return taskMap.get(id);
+        } finally {
+            historyManager.add(taskMap.get(id));
+        }
     }
 
     @Override
     public SubTask getSubTask(Integer epicId, Integer subTaskId) { // геттер
 
-            SubTask s = null;
+        SubTask s = null;
         try {
             for (SubTask subTask : epicMap.get(epicId).subTasks) {
                 if (subTask.getId() == subTaskId) {
@@ -233,7 +246,7 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
                 }
             }
             return s;
-        }finally {
+        } finally {
             historyManager.add(s);
         }
     }

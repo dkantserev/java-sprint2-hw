@@ -31,10 +31,8 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             l.next = newNode;
         }
-
         idNodeMap.put(task.getId(), newNode);
         size++;
-
     }
 
 

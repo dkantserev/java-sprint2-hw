@@ -7,6 +7,7 @@ import tracker.Tasks.Task;
 import tracker.history.HistoryManager;
 
 import java.util.HashMap;
+import java.util.TreeSet;
 
 public interface TaskManager { // интерфейс менеджера управляющего хранением и обработкой задач
     HashMap<Integer, Task> getTaskMap();
@@ -48,6 +49,10 @@ public interface TaskManager { // интерфейс менеджера упра
     Task getTask(Integer id);
 
     SubTask getSubTask(Integer epicId, Integer subTaskId);
+
+    Boolean overlappingTask(Task task);
+
+    TreeSet<Task> getPrioritizedTasks();
 
 
 }

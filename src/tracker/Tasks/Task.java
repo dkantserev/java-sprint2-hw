@@ -9,7 +9,7 @@ public class Task { // Родительский класс для всех ти�
     protected String taskBody;
     protected int id;
     protected Status status;
-    protected TypeTask typeTask ;
+    protected TypeTask typeTask;
     protected ZonedDateTime startTime;
     protected Duration duration;
     protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-hh-mm");
@@ -18,19 +18,18 @@ public class Task { // Родительский класс для всех ти�
         return typeTask;
     }
 
-
-
-    public Task(TypeTask typeTask,String nameTask, String taskBody, int id, Status status,ZonedDateTime startTime, Duration duration) {
+    public Task(TypeTask typeTask, String nameTask, String taskBody, int id, Status status, ZonedDateTime startTime
+            , Duration duration) {
         this.nameTask = nameTask;
         this.taskBody = taskBody;
         this.id = id;
         this.status = status;
-        this.typeTask=typeTask;
-        this.startTime=startTime;
-        this.duration=duration;
+        this.typeTask = typeTask;
+        this.startTime = startTime;
+        this.duration = duration;
     }
 
-    public ZonedDateTime getEndTime(){
+    public ZonedDateTime getEndTime() {
         return startTime.plus(duration);
     }
 
@@ -86,13 +85,13 @@ public class Task { // Родительский класс для всех ти�
 
     @Override
     public String toString() {
-        return typeTask + ","+
-                id + ","+
-                nameTask + ","+
-                taskBody + ","+
-                status + ","+
-                startTime.format(formatter) + ","+
+        return typeTask + "," +
+                id + "," +
+                nameTask + "," +
+                taskBody + "," +
+                status + "," +
+                startTime.format(formatter) + "," +
                 duration
-              ;
+                ;
     }
 }
