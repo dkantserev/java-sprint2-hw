@@ -9,6 +9,7 @@ import tracker.history.HistoryManager;
 import java.util.HashMap;
 import java.util.TreeSet;
 
+
 public interface TaskManager { // интерфейс менеджера управляющего хранением и обработкой задач
     HashMap<Integer, Task> getTaskMap();
 

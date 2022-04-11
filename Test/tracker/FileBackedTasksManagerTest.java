@@ -3,11 +3,13 @@ package tracker;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import tracker.Tasks.Epic;
 import tracker.Tasks.Task;
 import tracker.exception.ManagerSaveException;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,11 +46,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @Test
     void ManagerSaveException() {
-        try {
             File file = new File("exception.csv");
-            FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file);
-        } catch (ManagerSaveException e) {
-            assertEquals(e.getMessage(), "ошибка загрузки из файла", "не известная ошибка");
-        }
+            assertThrows(ManagerSaveException.class, ()->FileBackedTasksManager.loadFromFile(file),"не известное исключение");
     }
 }

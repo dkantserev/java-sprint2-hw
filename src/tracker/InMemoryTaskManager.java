@@ -11,7 +11,7 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
     private final HashMap<Integer, Task> taskMap = new HashMap<>();
     private final HashMap<Integer, Epic> epicMap = new HashMap<>();
     private final HistoryManager historyManager = Manager.getDefaultHistory();
-    private final TreeSet<Task> setTask = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+    private final Set<Task> setTask = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
     @Override
     public TreeSet<Task> getPrioritizedTasks() { // список задач по приоритету начала
@@ -19,7 +19,7 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
         for (Epic value : epicMap.values()) {
             setTask.addAll(value.subTasks);
         }
-        return setTask;
+        return (TreeSet<Task>) setTask;
     }
 
     public static Integer generaticId() {
@@ -219,35 +219,27 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
 
     @Override
     public Epic getEpic(Integer id) { // геттер
-        try {
-            return epicMap.get(id);
-        } finally {
-            historyManager.add(epicMap.get(id));
-        }
+        historyManager.add(epicMap.get(id));
+        return epicMap.get(id);
     }
 
     @Override
     public Task getTask(Integer id) { // геттер
-        try {
-            return taskMap.get(id);
-        } finally {
-            historyManager.add(taskMap.get(id));
-        }
+        historyManager.add(taskMap.get(id));
+        return taskMap.get(id);
     }
 
     @Override
     public SubTask getSubTask(Integer epicId, Integer subTaskId) { // геттер
 
         SubTask s = null;
-        try {
-            for (SubTask subTask : epicMap.get(epicId).subTasks) {
-                if (subTask.getId() == subTaskId) {
-                    s = subTask;
-                }
+
+        for (SubTask subTask : epicMap.get(epicId).subTasks) {
+            if (subTask.getId() == subTaskId) {
+                s = subTask;
             }
-            return s;
-        } finally {
-            historyManager.add(s);
         }
+        historyManager.add(s);
+        return s;
     }
 }
