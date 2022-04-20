@@ -1,14 +1,19 @@
 import tracker.*;
+import tracker.KVKlient.KVClient;
+import tracker.KVServer.KVServer;
 import tracker.Tasks.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+
+
 public class Main { // Класс для тестирование работы классов менеджер и задач.
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         System.out.println("Пришло время практики!");
         File file = new File("test.csv");
         FileBackedTasksManager manager = new FileBackedTasksManager(file);
@@ -26,6 +31,11 @@ public class Main { // Класс для тестирование работы �
                 InMemoryTaskManager.generaticId(), Status.TASK_NEW, epic1.getId(),ZonedDateTime.of(LocalDateTime.of(2026,11,1,1,1),zoneId),Duration.ofHours(8));
         Epic epic2 = new Epic(TypeTask.TYPE_EPIC, "эпик2", "oooo", InMemoryTaskManager.generaticId(),
                 Status.TASK_NEW,ZonedDateTime.of(LocalDateTime.of(2027,1,14,1,1),zoneId),Duration.ofHours(5));
+
+        new KVServer().start();
+        String URL = "http://localhost:8078";
+        KVClient kvKlient = new KVClient(URL);
+        kvKlient.register();
 
 
 
