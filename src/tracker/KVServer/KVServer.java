@@ -5,7 +5,8 @@ package tracker.KVServer;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
+    import java.io.OutputStream;
+    import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +17,11 @@ import java.util.Map;
         public static final int PORT = 8078;
         private final String API_KEY;
         private HttpServer server;
+
+        public  Map<String, String> getData() {
+            return data;
+        }
+
         private Map<String, String> data = new HashMap<>();
 
         public KVServer() throws IOException {
@@ -71,7 +77,11 @@ import java.util.Map;
                 }
             });
             server.createContext("/load", (h) -> {
-                // TODO Добавьте получение значения по ключу
+               h.sendResponseHeaders(200,0); // TODO Добавьте получение значения по ключу
+                String[] key= h.getRequestURI().getPath().split("/");
+                try(OutputStream os = h.getResponseBody()){
+                    os.write(data.get(key[2]).getBytes());
+                }
             });
         }
 
@@ -102,5 +112,7 @@ import java.util.Map;
             h.sendResponseHeaders(200, resp.length);
             h.getResponseBody().write(resp);
         }
+
+
     }
 

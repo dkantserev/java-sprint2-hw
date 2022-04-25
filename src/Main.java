@@ -1,6 +1,8 @@
 import tracker.*;
 import tracker.KVKlient.KVClient;
 import tracker.KVServer.KVServer;
+import tracker.Serializer.TaskJsonSerializer;
+import tracker.Serializer.TaskSerializer;
 import tracker.Tasks.*;
 
 import java.io.File;
@@ -13,7 +15,7 @@ import java.time.ZonedDateTime;
 
 
 public class Main { // Класс для тестирование работы классов менеджер и задач.
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         System.out.println("Пришло время практики!");
         File file = new File("test.csv");
         FileBackedTasksManager manager = new FileBackedTasksManager(file);
@@ -32,10 +34,23 @@ public class Main { // Класс для тестирование работы �
         Epic epic2 = new Epic(TypeTask.TYPE_EPIC, "эпик2", "oooo", InMemoryTaskManager.generaticId(),
                 Status.TASK_NEW,ZonedDateTime.of(LocalDateTime.of(2027,1,14,1,1),zoneId),Duration.ofHours(5));
 
-        new KVServer().start();
+      KVServer server = new KVServer();
+       server.start();
         String URL = "http://localhost:8078";
-        KVClient kvKlient = new KVClient(URL);
-        kvKlient.register();
+        TaskSerializer taskSerializer = new TaskJsonSerializer();
+        KVClient KVClient = new KVClient(URL,taskSerializer);
+        KVClient.register();
+        KVClient.save(task1);
+        System.out.println(KVClient.load(task1.getId()));
+        System.out.println(task1);
+        /*String test ="";
+        test=new TaskJsonSerializer().toObject(task1);
+        System.out.println(test);
+        Task task66 = new TaskJsonSerializer().fromString(test);
+        System.out.println(task66.getTaskBody());*/
+
+
+
 
 
 
