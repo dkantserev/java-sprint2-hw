@@ -1,4 +1,5 @@
 import tracker.*;
+import tracker.HttpTaskServer.HttpTaskServer;
 import tracker.KVKlient.KVClient;
 import tracker.KVServer.KVServer;
 import tracker.Serializer.TaskJsonSerializer;
@@ -13,7 +14,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 
-
 public class Main { // Класс для тестирование работы классов менеджер и задач.
     public static void main(String[] args) throws IOException, InterruptedException {
         System.out.println("Пришло время практики!");
@@ -21,24 +21,26 @@ public class Main { // Класс для тестирование работы �
         FileBackedTasksManager manager = new FileBackedTasksManager(file);
         ZoneId zoneId = ZoneId.systemDefault();
         Task task1 = new Task(TypeTask.TYPE_TASK, "Таск1", "задача", InMemoryTaskManager.generaticId(),
-                Status.TASK_NEW,ZonedDateTime.of(LocalDateTime.of(2028,1,1,21,1),zoneId),Duration.ofHours(3));
+                Status.TASK_NEW, ZonedDateTime.of(LocalDateTime.of(2028, 1, 1, 21, 1), zoneId), Duration.ofHours(3));
         Task task2 = new Task(TypeTask.TYPE_TASK, "Таск2", "задача", InMemoryTaskManager.generaticId(),
-                Status.DONE,ZonedDateTime.of(LocalDateTime.of(2023,1,11,1,1),zoneId),Duration.ofHours(2));
+                Status.DONE, ZonedDateTime.of(LocalDateTime.of(2023, 1, 11, 1, 1), zoneId), Duration.ofHours(2));
         Epic epic1 = new Epic(TypeTask.TYPE_EPIC, "Эпик1",
-                "задача", InMemoryTaskManager.generaticId(), Status.TASK_NEW,ZonedDateTime.of(LocalDateTime.of(2024,1,11,1,1),zoneId),Duration.ofHours(7));
+                "задача", InMemoryTaskManager.generaticId(), Status.TASK_NEW, ZonedDateTime.of(LocalDateTime.of(2024, 1, 11, 1, 1), zoneId), Duration.ofHours(7));
         SubTask subTask1 = new SubTask(TypeTask.TYPE_SUBTASK, "сабтаск1", "ooo",
                 InMemoryTaskManager.generaticId(),
-                Status.TASK_NEW, epic1.getId(),ZonedDateTime.of(LocalDateTime.of(2025,1,1,1,1),zoneId),Duration.ofHours(5));
+                Status.TASK_NEW, epic1.getId(), ZonedDateTime.of(LocalDateTime.of(2025, 1, 1, 1, 1), zoneId), Duration.ofHours(5));
         SubTask subTask2 = new SubTask(TypeTask.TYPE_SUBTASK, "сабтаск2", "ooooo",
-                InMemoryTaskManager.generaticId(), Status.TASK_NEW, epic1.getId(),ZonedDateTime.of(LocalDateTime.of(2026,11,1,1,1),zoneId),Duration.ofHours(8));
+                InMemoryTaskManager.generaticId(), Status.TASK_NEW, epic1.getId(), ZonedDateTime.of(LocalDateTime.of(2026, 11, 1, 1, 1), zoneId), Duration.ofHours(8));
         Epic epic2 = new Epic(TypeTask.TYPE_EPIC, "эпик2", "oooo", InMemoryTaskManager.generaticId(),
-                Status.TASK_NEW,ZonedDateTime.of(LocalDateTime.of(2027,1,14,1,1),zoneId),Duration.ofHours(5));
+                Status.TASK_NEW, ZonedDateTime.of(LocalDateTime.of(2027, 1, 14, 1, 1), zoneId), Duration.ofHours(5));
 
-      KVServer server = new KVServer();
-       server.start();
+        KVServer server = new KVServer();
+        HttpTaskServer httpTaskServer = new HttpTaskServer(manager);
+        server.start();
+
         String URL = "http://localhost:8078";
         TaskSerializer taskSerializer = new TaskJsonSerializer();
-        KVClient KVClient = new KVClient(URL,taskSerializer);
+        KVClient KVClient = new KVClient(URL, taskSerializer);
         KVClient.register();
         KVClient.save(task1);
         System.out.println(KVClient.load(task1.getId()));
@@ -50,11 +52,6 @@ public class Main { // Класс для тестирование работы �
         System.out.println(task66.getTaskBody());*/
 
 
-
-
-
-
-
         manager.addTaskToMap(task1.getId(), task1);
         manager.addEpicToMap(epic1.getId(), epic1);
         manager.addSubTaskMap(subTask1, epic1.getId());
@@ -62,15 +59,15 @@ public class Main { // Класс для тестирование работы �
         manager.addEpicToMap(epic2.getId(), epic2);
 
         manager.addTaskToMap(task2.getId(), task2);
+        httpTaskServer.start();
         System.out.println(manager.getEpic(epic1.getId()).getEndTime());
-        System.out.println(manager.getSubTask(epic1.getId(),subTask1.getId()).getEndTime());
-        System.out.println(manager.getSubTask(epic1.getId(),subTask2.getId()).getEndTime());
+        System.out.println(manager.getSubTask(epic1.getId(), subTask1.getId()).getEndTime());
+        System.out.println(manager.getSubTask(epic1.getId(), subTask2.getId()).getEndTime());
         System.out.println(manager.getEpic(epic1.getId()).getStartTime());
-        System.out.println(manager.getSubTask(epic1.getId(),subTask1.getId()).getStartTime());
-        System.out.println(manager.getSubTask(epic1.getId(),subTask2.getId()).getStartTime());
+        System.out.println(manager.getSubTask(epic1.getId(), subTask1.getId()).getStartTime());
+        System.out.println(manager.getSubTask(epic1.getId(), subTask2.getId()).getStartTime());
         System.out.println(manager.getEpic(epic2.getId()).getStartTime());
         System.out.println(manager.getPrioritizedTasks());
-
 
 
         manager.getSubTask(epic1.getId(), subTask1.getId());

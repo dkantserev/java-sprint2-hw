@@ -14,7 +14,7 @@ public class KVClient {
     private  String apiKey;
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final static String requestTemplate = "%s/%s/%s?API_KEY=%s";
-    private TaskSerializer taskSerializer;
+    private final TaskSerializer taskSerializer;
 
     public KVClient(String url,TaskSerializer taskSerializer) {
         this.url = url;

@@ -1,6 +1,8 @@
 package tracker.Serializer;
 
 import com.google.gson.*;
+import tracker.Tasks.Epic;
+import tracker.Tasks.SubTask;
 import tracker.Tasks.Task;
 
 import java.lang.reflect.Type;
@@ -30,6 +32,39 @@ public class TaskJsonSerializer implements TaskSerializer {
             }
         });
 
-        return gson.create().fromJson(string,Task.class);
+        return gson.create().fromJson(string, Task.class);
+    }
+
+    @Override
+    public Epic epicFromString(String string) {
+        GsonBuilder gson = new GsonBuilder().registerTypeAdapter(ZoneId.class, new JsonDeserializer<ZoneId>() {
+            @Override
+            public ZoneId deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+                return ZoneId.systemDefault();
+            }
+        }).registerTypeAdapter(DateTimeFormatter.class, new JsonDeserializer<DateTimeFormatter>() {
+            @Override
+            public DateTimeFormatter deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+                return DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm");
+            }
+        });
+
+        return gson.create().fromJson(string, Epic.class);
+    }
+
+    @Override
+    public SubTask subtaskFromString(String string) {
+        GsonBuilder gson = new GsonBuilder().registerTypeAdapter(ZoneId.class, new JsonDeserializer<ZoneId>() {
+            @Override
+            public ZoneId deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+                return ZoneId.systemDefault();
+            }
+        }).registerTypeAdapter(DateTimeFormatter.class, new JsonDeserializer<DateTimeFormatter>() {
+            @Override
+            public DateTimeFormatter deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+                return DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm");
+            }
+        });
+        return gson.create().fromJson(string, SubTask.class);
     }
 }
