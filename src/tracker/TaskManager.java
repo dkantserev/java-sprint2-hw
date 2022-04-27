@@ -6,6 +6,7 @@ import tracker.Tasks.SubTask;
 import tracker.Tasks.Task;
 import tracker.history.HistoryManager;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.TreeSet;
 
@@ -55,5 +56,5 @@ public interface TaskManager { // интерфейс менеджера упра
 
     TreeSet<Task> getPrioritizedTasks();
 
-
+    void load() throws IOException, InterruptedException;
 }

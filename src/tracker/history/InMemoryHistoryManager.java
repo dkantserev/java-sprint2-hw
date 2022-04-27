@@ -87,6 +87,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         head = tail = null;
         size = 0;
+        idNodeMap.clear();
 
     }
 

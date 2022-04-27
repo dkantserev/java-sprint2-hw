@@ -3,16 +3,13 @@ package tracker;
 import org.junit.jupiter.api.Test;
 import tracker.Tasks.*;
 import tracker.exception.OverlappingException;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskManagerTest<C extends TaskManager> {

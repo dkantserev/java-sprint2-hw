@@ -4,6 +4,7 @@ import tracker.Tasks.*;
 import tracker.exception.OverlappingException;
 import tracker.history.HistoryManager;
 
+import java.io.IOException;
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager { // Хранилище всех типов задач, вся логика работы с ними
@@ -20,6 +21,11 @@ public class InMemoryTaskManager implements TaskManager { // Хранилище 
             setTask.addAll(value.subTasks);
         }
         return (TreeSet<Task>) setTask;
+    }
+
+    @Override
+    public void load() throws IOException, InterruptedException {
+
     }
 
     public static Integer generaticId() {

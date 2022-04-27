@@ -1,9 +1,6 @@
 package tracker.HttpTaskServer;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.sun.net.httpserver.HttpServer;
-import tracker.FileBackedTasksManager;
 import tracker.Serializer.TaskJsonSerializer;
 import tracker.Serializer.TaskSerializer;
 import tracker.TaskManager;
@@ -13,12 +10,11 @@ import tracker.Tasks.Task;
 
 import static tracker.Serializer.MapToJson.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+
 
 public class HttpTaskServer {
     public static final int PORT = 8080;
@@ -32,15 +28,21 @@ public class HttpTaskServer {
         server.createContext("/tasks/task", (h) -> {
                     switch (h.getRequestMethod()) {
                         case "GET":
+                            if (manager.getTaskMap().isEmpty()) {
+                                h.sendResponseHeaders(505, 0);
+                                OutputStream os = h.getResponseBody();
+                                os.close();
+                            }
                             String body = "";
                             if (h.getRequestURI().getQuery() != null) {
                                 String[] q = h.getRequestURI().getQuery().split("=");
                                 int id = Integer.parseInt(q[1]);
                                 body = taskSerializer.toObject(manager.getTask(id));
                             } else {
-                                body = taskMapToJsonList(manager, taskSerializer);
+                                body = taskMapToJsonList(manager.getTaskMap(), taskSerializer);
                             }
                             h.sendResponseHeaders(200, 0);
+
                             try (OutputStream os = h.getResponseBody()) {
                                 os.write(body.getBytes());
                             }
@@ -61,7 +63,7 @@ public class HttpTaskServer {
                             }
                             break;
                         case "POST":
-                            String ss = new String(h.getRequestBody().readAllBytes(), "UTF-8");
+                            String ss = new String(h.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                             Task task = taskSerializer.fromString(ss);
                             manager.addTaskToMap(task.getId(), task);
                             h.sendResponseHeaders(250, 0);
@@ -75,13 +77,18 @@ public class HttpTaskServer {
         server.createContext("/tasks/epic", (h) -> {
             switch (h.getRequestMethod()) {
                 case "GET":
+                    if (manager.getTaskMap().isEmpty()) {
+                        h.sendResponseHeaders(505, 0);
+                        OutputStream os = h.getResponseBody();
+                        os.close();
+                    }
                     String body = "";
                     if (h.getRequestURI().getQuery() != null) {
                         String[] q = h.getRequestURI().getQuery().split("=");
                         int id = Integer.parseInt(q[1]);
                         body = taskSerializer.toObject(manager.getEpic(id));
                     } else {
-                        body = epicMapToJsonList(manager, taskSerializer);
+                        body = epicMapToJsonList(manager.getEpicMap(), taskSerializer);
                     }
                     h.sendResponseHeaders(200, 0);
                     try (OutputStream os = h.getResponseBody()) {
@@ -104,7 +111,7 @@ public class HttpTaskServer {
                     }
                     break;
                 case "POST":
-                    String ss = new String(h.getRequestBody().readAllBytes(), "UTF-8");
+                    String ss = new String(h.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                     Epic task = taskSerializer.epicFromString(ss);
                     manager.addEpicToMap(task.getId(), task);
                     h.sendResponseHeaders(250, 0);
@@ -126,7 +133,7 @@ public class HttpTaskServer {
                         int idSubtask = Integer.parseInt(subtask[1]);
                         body = taskSerializer.toObject(manager.getSubTask(idEpic, idSubtask));
                     } else {
-                        body = subtaskMapToJsonList(manager, taskSerializer);
+                        body = subtaskMapToJsonList(manager.getEpicMap(), taskSerializer);
                     }
                     h.sendResponseHeaders(200, 0);
                     try (OutputStream os = h.getResponseBody()) {
@@ -187,13 +194,13 @@ public class HttpTaskServer {
         server.createContext("/tasks/history", (h) -> {
             h.sendResponseHeaders(200, 0);
             try (OutputStream os = h.getResponseBody()) {
-                os.write(historyMapToJsonList(manager, taskSerializer).getBytes());
+                os.write(historyMapToJsonList(manager.getHistoryManager(), taskSerializer).getBytes());
             }
         });
         server.createContext("/tasks", (h) -> {
             h.sendResponseHeaders(200, 0);
             try (OutputStream os = h.getResponseBody()) {
-                os.write(prioritizedMapToJsonList(manager, taskSerializer).getBytes());
+                os.write(prioritizedMapToJsonList(manager.getPrioritizedTasks(), taskSerializer).getBytes());
             }
         });
     }
@@ -202,6 +209,11 @@ public class HttpTaskServer {
         System.out.println("Запускаем сервер на порту " + PORT);
         System.out.println("Открой в браузере http://localhost:" + PORT + "/");
         server.start();
+    }
+
+    public void stop() {
+        server.stop(0);
+        System.out.println("cthdth jcnfyjdkty");
     }
 
 
