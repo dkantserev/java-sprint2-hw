@@ -4,12 +4,12 @@ import com.google.gson.Gson;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tracker.HttpTaskServer.HttpTaskServer;
-import tracker.KVKlient.KVClient;
-import tracker.KVServer.KVServer;
-import tracker.Serializer.TaskJsonSerializer;
-import tracker.Serializer.TaskSerializer;
-import tracker.Tasks.*;
+import tracker.http_task_server.HttpTaskServer;
+import tracker.kv_client.KVClient;
+import tracker.kv_server.KVServer;
+import tracker.serializer.TaskJsonSerializer;
+import tracker.serializer.TaskSerializer;
+import tracker.tasks.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -19,7 +19,7 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import static tracker.Serializer.MapToJson.*;
+import static tracker.serializer.MapToJson.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HTTPTaskManagerTest extends TaskManagerTest<HTTPTaskManager> {
@@ -33,7 +33,7 @@ class HTTPTaskManagerTest extends TaskManagerTest<HTTPTaskManager> {
     public void start() throws IOException {
         server = new KVServer();
         server.start();
-        File file = new File("testServer.csv");
+        File file = new File("resource/testServer.csv");
         String URL = "http://localhost:8078";
         TaskSerializer taskSerializer = new TaskJsonSerializer();
         KVClient kvClient = new KVClient(URL, taskSerializer);

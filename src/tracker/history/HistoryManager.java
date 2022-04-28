@@ -1,6 +1,6 @@
 package tracker.history;
 
-import tracker.Tasks.Task;
+import tracker.tasks.Task;
 
 import java.util.List;
 
@@ -12,8 +12,6 @@ public interface HistoryManager { // интерфейс менеджера по 
     List<Task> getHistory();
 
     void remove(Integer id);
-
-    int getSize();
 
     void clearHistory();
 

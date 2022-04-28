@@ -1,13 +1,13 @@
 package tracker;
 
 
-import tracker.KVKlient.KVClient;
-import tracker.Serializer.TaskJsonSerializer;
-import tracker.Tasks.Epic;
-import tracker.Tasks.SubTask;
-import tracker.Tasks.Task;
+import tracker.kv_client.KVClient;
+import tracker.serializer.TaskJsonSerializer;
+import tracker.tasks.Epic;
+import tracker.tasks.SubTask;
+import tracker.tasks.Task;
 
-import static tracker.Serializer.MapToJson.*;
+import static tracker.serializer.MapToJson.*;
 
 import java.io.File;
 import java.io.IOException;

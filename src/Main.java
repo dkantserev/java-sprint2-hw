@@ -1,7 +1,7 @@
 import tracker.*;
-import tracker.HttpTaskServer.HttpTaskServer;
-import tracker.KVServer.KVServer;
-import tracker.Tasks.*;
+import tracker.http_task_server.HttpTaskServer;
+import tracker.kv_server.KVServer;
+import tracker.tasks.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -71,7 +71,6 @@ public class Main { // Класс для тестирование работы �
         manager.getSubTask(epic1.getId(), subTask1.getId());
         manager.getSubTask(epic1.getId(), subTask2.getId());
 
-        System.out.println(manager.getHistoryManager().getSize());
         System.out.println(manager.getHistoryManager().getHistory());
 
         manager.getSubTask(epic1.getId(), subTask1.getId());
@@ -80,7 +79,6 @@ public class Main { // Класс для тестирование работы �
         System.out.println(manager.getHistoryManager().getHistory());
         System.out.println(manager.getHistoryManager().getHistory());
         System.out.println(manager.getHistoryManager().getHistory());
-        System.out.println(manager.getHistoryManager().getSize());
         System.out.println(manager.getHistoryManager().getHistory());
 
 
@@ -88,13 +86,12 @@ public class Main { // Класс для тестирование работы �
         System.out.println(manager.getEpicMap());
 
         System.out.println(manager.getHistoryManager().getHistory());
-        System.out.println(manager.getHistoryManager().getSize());
+
 
         manager.removeEverythingCompletely();
         manager.load();
 
         System.out.println(manager.getHistoryManager().getHistory());
-        System.out.println(manager.getHistoryManager().getSize());
         HttpClient client = HttpClient.newHttpClient();
 
         URI url = URI.create("http://localhost:8080/tasks/task");

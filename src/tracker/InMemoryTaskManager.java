@@ -1,6 +1,6 @@
 package tracker;
 
-import tracker.Tasks.*;
+import tracker.tasks.*;
 import tracker.exception.OverlappingException;
 import tracker.history.HistoryManager;
 

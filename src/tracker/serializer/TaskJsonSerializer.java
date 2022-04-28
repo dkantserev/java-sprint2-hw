@@ -1,9 +1,9 @@
-package tracker.Serializer;
+package tracker.serializer;
 
 import com.google.gson.*;
-import tracker.Tasks.Epic;
-import tracker.Tasks.SubTask;
-import tracker.Tasks.Task;
+import tracker.tasks.Epic;
+import tracker.tasks.SubTask;
+import tracker.tasks.Task;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 

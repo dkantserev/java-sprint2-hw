@@ -3,8 +3,8 @@ package tracker;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tracker.Tasks.Epic;
-import tracker.Tasks.Task;
+import tracker.tasks.Epic;
+import tracker.tasks.Task;
 import tracker.exception.ManagerSaveException;
 import java.io.File;
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,7 +15,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @BeforeEach
     public void start() {
-        file = new File("test1.csv");
+        file = new File("resource/test1.csv");
         taskManager = new FileBackedTasksManager(file);
         creatorTestManager();
     }
@@ -30,7 +30,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @Test
     void LoadInMemory() {
-        File file = new File("test1.csv");
+        File file = new File("resource/test1.csv");
         FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile(file);
         assertArrayEquals(taskManager.getTaskMap().values().toArray(new Task[0]), manager.getTaskMap().values()
                 .toArray(), "список задач восстановлен не корректно");

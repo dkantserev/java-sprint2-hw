@@ -1,7 +1,6 @@
-package tracker.KVKlient;
+package tracker.kv_client;
 
-import tracker.Serializer.TaskSerializer;
-import tracker.Tasks.Task;
+import tracker.serializer.TaskSerializer;
 
 import java.io.IOException;
 import java.net.URI;

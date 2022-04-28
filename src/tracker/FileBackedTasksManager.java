@@ -1,6 +1,6 @@
 package tracker;
 
-import tracker.Tasks.*;
+import tracker.tasks.*;
 import tracker.exception.ManagerSaveException;
 import tracker.history.HistoryManager;
 
@@ -20,15 +20,13 @@ import java.util.Locale;
 public class FileBackedTasksManager extends InMemoryTaskManager { // класс с функцией загрузки из файла
 
     public static void main(String[] args) { // проверка корректности загрузки из файла
-        File file = new File("test.csv");
+        File file = new File("resource/test.csv");
         FileBackedTasksManager manager = loadFromFile(file);
         System.out.println(manager.getTaskMap());
         System.out.println(manager.getEpicMap());
         System.out.println("\n");
         System.out.println(manager.getHistoryManager().getHistory());
-        System.out.println(manager.getHistoryManager().getSize());
         System.out.println(manager.getHistoryManager().getHistory());
-        System.out.println(manager.getHistoryManager().getSize());
         System.out.println((manager.getPrioritizedTasks()));
     }
 

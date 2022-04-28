@@ -1,7 +1,7 @@
 package tracker;
 
 import org.junit.jupiter.api.Test;
-import tracker.Tasks.*;
+import tracker.tasks.*;
 import tracker.exception.OverlappingException;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -60,7 +60,7 @@ class TaskManagerTest<C extends TaskManager> {
         taskManager.getTask(1);
         taskManager.getEpic(2);
         taskManager.getSubTask(2, 3);
-        assertEquals(taskManager.getHistoryManager().getSize(), 3, "не верное количество просмотров");
+        assertEquals(taskManager.getHistoryManager().getHistory().size(), 3, "не верное количество просмотров");
     }
 
     @Test
@@ -74,7 +74,7 @@ class TaskManagerTest<C extends TaskManager> {
         taskManager.getTask(task.getId());
         taskManager.getTask(task.getId());
         taskManager.getTask(task.getId());
-        assertEquals(taskManager.getHistoryManager().getSize(),1,"дублирование задач в истории");
+        assertEquals(taskManager.getHistoryManager().getHistory().size(),1,"дублирование задач в истории");
     }
 
     @Test

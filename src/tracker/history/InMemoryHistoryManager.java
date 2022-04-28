@@ -1,20 +1,13 @@
 package tracker.history;
 
 
-import tracker.Tasks.Task;
-
+import tracker.tasks.Task;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private Node<Task> head;
     private Node<Task> tail;
-    private int size = 0;
     private Map<Integer, Node<Task>> idNodeMap = new HashMap<>();
-
-    @Override
-    public int getSize() { // геттер размера листа
-        return size;
-    }
 
     @Override
     public void add(Task task) { // добавляет задачу в историю
@@ -22,7 +15,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (idNodeMap.containsKey(task.getId())) {
             remove(task.getId());
         }
-
         final Node<Task> l = tail;
         final Node<Task> newNode = new Node<>(task, null, tail);
         tail = newNode;
@@ -32,7 +24,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             l.next = newNode;
         }
         idNodeMap.put(task.getId(), newNode);
-        size++;
+
     }
 
 
@@ -72,9 +64,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             next.previous = prev;
             x.next = null;
         }
-
         x.data = null;
-        size--;
     }
 
     public void clearHistory() { // удаляет всю историю
@@ -86,9 +76,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             x = next;
         }
         head = tail = null;
-        size = 0;
         idNodeMap.clear();
-
     }
 
 

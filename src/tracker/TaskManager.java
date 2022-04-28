@@ -1,9 +1,9 @@
 package tracker;
 
-import tracker.Tasks.Epic;
-import tracker.Tasks.Status;
-import tracker.Tasks.SubTask;
-import tracker.Tasks.Task;
+import tracker.tasks.Epic;
+import tracker.tasks.Status;
+import tracker.tasks.SubTask;
+import tracker.tasks.Task;
 import tracker.history.HistoryManager;
 
 import java.io.IOException;

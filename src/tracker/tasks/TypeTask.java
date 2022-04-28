@@ -1,4 +1,4 @@
-package tracker.Tasks;
+package tracker.tasks;
 
 public enum TypeTask {
     TYPE_TASK,

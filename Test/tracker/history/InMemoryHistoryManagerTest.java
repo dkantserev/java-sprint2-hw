@@ -2,9 +2,9 @@ package tracker.history;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tracker.Tasks.Status;
-import tracker.Tasks.Task;
-import tracker.Tasks.TypeTask;
+import tracker.tasks.Status;
+import tracker.tasks.Task;
+import tracker.tasks.TypeTask;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -47,14 +47,14 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task1);
         historyManager.add(task4);
         historyManager.add(task4);
-        assertEquals(historyManager.getSize(), 3, "дублирование истории");
+        assertEquals(historyManager.getHistory().size(), 3, "дублирование истории");
     }
 
     @Test
     void add() {
         historyManager.clearHistory();
         historyManager.add(task);
-        assertEquals(historyManager.getSize(), 1, "задача не добавляется в историю");
+        assertEquals(historyManager.getHistory().size(), 1, "задача не добавляется в историю");
     }
 
     @Test
@@ -98,6 +98,6 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task3);
         historyManager.add(task4);
         historyManager.clearHistory();
-        assertEquals(historyManager.getSize(), 0, "история не очищена");
+        assertEquals(historyManager.getHistory().size(), 0, "история не очищена");
     }
 }

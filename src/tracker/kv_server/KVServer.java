@@ -1,4 +1,4 @@
-package tracker.KVServer;
+package tracker.kv_server;
 
 
 import com.sun.net.httpserver.HttpExchange;

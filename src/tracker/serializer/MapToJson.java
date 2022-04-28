@@ -1,7 +1,7 @@
-package tracker.Serializer;
-import tracker.Tasks.Epic;
-import tracker.Tasks.SubTask;
-import tracker.Tasks.Task;
+package tracker.serializer;
+import tracker.tasks.Epic;
+import tracker.tasks.SubTask;
+import tracker.tasks.Task;
 import tracker.history.HistoryManager;
 import java.util.HashMap;
 import java.util.TreeSet;
